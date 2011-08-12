@@ -1,0 +1,120 @@
+# -*- coding: utf-8 -*-
+# Django settings for buy project.
+
+DEBUG = True
+
+ADMINS = (
+    # ('Your Name', 'your_email@domain.com'),
+    ('Vasiliy Korchagin', 'vasiliy.korchagin@gmail.com'),
+)
+
+MANAGERS = ADMINS
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'buydb',
+        'USER': 'buy',
+        'PASSWORD': 'baraholka'
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+    }
+}
+
+
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+# If running in a Windows environment this must be set to the same as your
+# system time zone.
+TIME_ZONE = 'Europe/Moscow'
+
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'ru-RU'
+
+SITE_ID = 1
+
+# If you set this to False, Django will make some optimizations so as not
+# to load the internationalization machinery.
+USE_I18N = True
+
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+# MEDIA_ROOT = '/var/www/djcode/buy/media'
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash if there is a path component (optional in other cases).
+# Examples: "http://media.lawrence.com", "http://example.com/media/"
+# MEDIA_URL = ''
+
+# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
+# trailing slash.
+# Examples: "http://foo.com/media/", "/media/".
+# ADMIN_MEDIA_PREFIX = '/media/'
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 't^*#g9u+!u1rv)9jejr+wwzy)s$fs^@uila&q8v_0_9)#10hsi'
+
+# List of callables that know how to import templates from various sources.
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.load_template_source',
+    'django.template.loaders.app_directories.load_template_source',
+#     'django.template.loaders.eggs.load_template_source',
+)
+
+AUTH_PROFILE_MODULE = 'ads.UserProfile'
+
+# --- Start of the postman settings ---
+POSTMAN_DISALLOW_ANONYMOUS=True
+POSTMAN_DISALLOW_MULTIRECIPIENTS=True
+POSTMAN_DISALLOW_COPIES_ON_REPLY=True
+POSTMAN_AUTO_MODERATE_AS=True
+# --- End of the postman settings  ---
+
+# --- Start of the haystack settings ---
+HAYSTACK_SITECONF = 'buy.search_sites'
+HAYSTACK_SEARCH_ENGINE = 'simple'
+# --- End of the haystack settings   ---
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.request",
+    "django.contrib.messages.context_processors.messages",
+    "postman.context_processors.inbox",
+)
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'pagination.middleware.PaginationMiddleware',
+)
+
+ROOT_URLCONF = 'buy.urls'
+
+TEMPLATE_DIRS = (
+    '/var/www/djcode/buy/templates',
+)
+
+INSTALLED_APPS = (
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.markup',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'pagination',
+    'buy.ads',
+    'postman',
+    'haystack',
+)

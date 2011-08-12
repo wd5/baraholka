@@ -1,0 +1,31 @@
+# -*- coding: utf-8 -*-
+from django.conf.urls.defaults import *
+from buy.ads.views import *
+from django.contrib.auth.views import login, logout
+from postman import urls as postman_urls
+
+# Uncomment the next two lines to enable the admin:
+from django.contrib import admin
+admin.autodiscover()
+
+urlpatterns = patterns('',
+    # Uncomment the next line to enable the admin:
+    (r'^admin/', include(admin.site.urls)),
+    (r'^login/$', login),
+    (r'^logout/$', logout),
+    (r'^ads/(?P<num>\d+)/$', ad_show),
+    (r'^$', main, {'p_num': '1'}),
+    (r'^page/(?P<p_num>\d+)/$', main),
+    (r'^news/$', news_all_show),
+    (r'^news/(?P<num>\d+)/$', news_show),
+    (r'^cat/(?P<num>\d+)/$', cat_list, {'p_num':'1'}),
+    (r'^cat/(?P<num>\d+)/page/(?P<p_num>\d+)/$', cat_list),
+    (r'^add/$', ad_add),
+    (r'^cabinet/$', cabinet),
+    (r'^cabinet/ads$', my_ads_list),
+    #(r'^cabinet/msg$', msg_list),
+    (r'^cabinet/msg/', include(postman_urls)),
+    (r'^reg/$', reg),
+    #(r'^search/$', search),
+    (r'^search/', include('haystack.urls')),
+)

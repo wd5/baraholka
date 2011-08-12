@@ -1,0 +1,36 @@
+{% extends "main.html" %}
+
+{% block center %}
+<div align='center'>
+    <font style='font-size:125%'><b>[{{ ad.category }}] {{ad.name}}</font></b><br>
+    Сообщение было послано: {{ad.user}} <a href="{% url postman_write ad.user %}">(Написать)</a><br>
+    Дата: {{ad.created|date:"l, F j G:i:s Y"}}
+</div>
+    <br><br>
+    {% if errors %}
+{% autoescape off %}
+     {% for error in errors %}
+     <center><font style='color:red;font-size:125%'>{{error}}</font></center><br>
+     {% endfor %}
+{% endautoescape %}
+    {% endif %}<br>
+    {% load bbcode %}
+    {{ad.text|bbcode}}<br><br>
+    {% if ad.price %}
+    <b>Цена:</b> {{ad.price}}<hr>
+    {% endif %}
+    {% if ad.place %}
+    <b>Место:</b> {{ad.place}}<hr>
+    {% endif %}
+    {% for comment in comments_list %}
+    Комментрий пользователя {{comment.user}} <a href="{% url postman_write comment.user %}">(Написать)</a>, оставлен {{comment.created}}<br>
+    {{comment.text|bbcode}}<hr>
+    {% endfor %}
+    <center>
+
+    <form action="." method="post">{% csrf_token %}
+    Добавить комментарий:<br>{{comform.text}}<br>
+    <input type="submit" value="Добавить">
+    </form>
+    </center>
+{%endblock %}

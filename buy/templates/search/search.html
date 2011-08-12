@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Поиск</h2>
+
+    <form method="get" action=".">
+        <table>
+            <tr><td>{{ form.q }}</td><td><input type="submit" value="Найти"></td></tr>
+        </table>
+
+        {% if query %}
+            <h3>Результаты</h3>
+
+            {% for result in page.object_list %}
+
+	  <div id='ad'><a href='/ads/{{result.object.id}}'>[{{ result.object.category }}] {{result.object.name}}</a> - {% ifequal user result.object.user %}<b style='color:red'>{% else %}<b style='color:darkgreen'>{% endifequal %}{{result.object.user}}</b> - <font style='font-size:75%'>{{result.object.created|date:"j/n/Y H:i"}}</font><hr size='1'></div>
+            {% empty %}
+                <p>По данному запросу ничего не найдено.</p>
+            {% endfor %}
+
+            {% if page.has_previous or page.has_next %}
+                <div>
+                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Предыдущая{% if page.has_previous %}</a>{% endif %}
+                    |
+                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Следующая &raquo;{% if page.has_next %}</a>{% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            {# Show some example queries to run, maybe query syntax, something else? #}
+        {% endif %}
+    </form>
+{% endblock %}

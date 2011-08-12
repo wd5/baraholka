@@ -1,0 +1,21 @@
+{% extends "main.html" %}
+
+{% block center %}
+<div align='center'>
+    <font style='font-size:125%'><b>{{ news.name }}</font></b><br>
+</div>
+    <br>
+    {% load bbcode %}
+    {{news.text|bbcode}}<hr>
+    {% for comment in comments_list %}
+    Комментрий пользователя {{comment.user}}, оставлен {{comment.created}}<br>
+    {{comment.text|bbcode}}<hr>
+    {% endfor %}
+    <center>
+
+    <form action="." method="post">{% csrf_token %}
+    Добавить комментарий:<br>{{comform.text}}<br>
+    <input type="submit" value="Добавить">
+    </form>
+    </center>
+{%endblock %}

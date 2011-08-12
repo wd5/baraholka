@@ -1,0 +1,11 @@
+{% extends "main.html" %}
+
+{% block center %}
+
+    {% load markup %}
+    <ul>
+    {% for news in news_all_list %}
+    <li><a href="/news/{{news.id}}">{{news.name}}</a></li>
+    {% endfor %}
+    </ul>
+{%endblock %}

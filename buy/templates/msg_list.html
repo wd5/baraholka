@@ -1,0 +1,10 @@
+{% extends "cabinet.html" %}
+
+{% block info%}
+	<hr size='1' noshade>
+Личные сообщения пока не реализованы.
+	{% for msg in msg_list %}
+	  Сообщение от {{msg.user_from}} к {{msg.user_to}}, послано {{msg.created}}<br>
+	  {{msg.text}}
+	{% endfor %}
+{% endblock %}

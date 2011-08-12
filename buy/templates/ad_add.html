@@ -1,0 +1,75 @@
+{% extends "main.html" %}
+
+{% block extrahead %}
+<script>function showTooltip()
+{
+var myDiv = document.getElementById('tooltip');
+if(myDiv.style.display == 'none')
+{
+myDiv.style.display = 'block';
+} else {
+myDiv.style.display = 'none';
+}
+return false;
+}</script>
+{% endblock %}
+
+{% block center %}
+{% if preview %}
+<div align='center'>
+    <font style='font-size:125%'><b>[{{ ad.category }}] {{ad.name}}</font></b><br>
+    Сообщение было послано: {{ad.user}}
+</div>
+    <br><br>
+    {% load bbcode %}
+    {{ad.text|bbcode}}<br><br>
+    {% if ad.price %}
+    <b>Цена:</b> {{ad.price}}<hr>
+    {% endif %}
+    {% if ad.place %}
+    <b>Цена:</b> {{ad.place}}<hr>
+    {% endif %}
+{% endif %}
+<div align='center'>
+{% if errors %}
+{% autoescape off %}
+<font style='font-size:125%'>
+    {% for error in errors %}
+	{{error}} <br>
+    {% endfor %}
+</font>
+{% endautoescape %}
+{% endif %}
+<a href='javascript:;' onclick=showTooltip()> Показать подсказку по bbCode </a>
+<div id=tooltip style='display: none'>
+<table border='1'>
+  <tr>
+    <td>[b]полужирный текст[/b]</td>
+    <td><strong>полужирный текст</strong></td>
+  <tr>
+  <tr>
+    <td>[i]наклонный текст[/i]</td>
+    <td><i>наклонный текст</i></td>
+  <tr>
+  <tr>
+    <td>[img]http://example.org/logo.png[/img]</td>
+    <td>Картинка</td>
+  <tr>
+  <tr>
+    <td>[url=http://wikipedia.org]Википедия[/url] или [url]http://ru.wikipedia.org[/url]</td>
+    <td><a href="http://wikipedia.org">Википедия</a> или <a href="http://ru.wikipedia.org">http://ru.wikipedia.org</a></td>
+  <tr>
+</table>
+<a href="http://ru.wikipedia.org/wiki/BbCode">подробнее о тегах...</a>
+</div>
+    <form action="." method="post">{% csrf_token %}
+    {{addform.errors}}<br>
+    <b>Тема:</b>{{addform.category}} {{addform.name}}<br><br>
+    {{addform.text}}<br>
+    <b>Цена (не обязательно):</b>{{addform.price}}<br><br>
+    <b>Место (не обязательно):</b>{{addform.place}}<br><br>
+<input name="preview" type="submit" value="Предварительный просмотр">    
+<input name="post" type="submit" value="Добавить">
+    </form>
+</div>
+{%endblock %}

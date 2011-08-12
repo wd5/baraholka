@@ -1,0 +1,19 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div align='center'>
+    {% if regform.errors %}
+	{{regform.errors}}
+    {% endif %}
+<form action='.' method='post'>{% csrf_token %}
+<form action="." method="post">
+    <b>Имя пользователя:</b>{{regform.username}}<br><br>
+<b>Пароль:</b>{{regform.passw}}<br><br>
+<b>Пароль еще раз:</b>{{regform.passw_again}}<br><br>
+<b>Полное имя:</b>{{regform.fullname}}<br><br>
+<b>E-mail адрес:</b>{{regform.email}}<br><br>
+<b>Контактная информация:</b>{{regform.info}}<br>
+<input type="submit" value="Зарегистрироваться">
+</form>
+</div>
+{%endblock %}

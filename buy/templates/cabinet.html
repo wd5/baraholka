@@ -1,0 +1,40 @@
+{% extends "main.html" %}
+
+{% block content %}
+<table width="100%">
+    <tr>
+      <td>
+        <a href="/cabinet">Профиль</a>
+      </td>
+      <td>
+	<a href="/cabinet/ads">Мои объявы</a>
+      </td>
+      <td>
+        <a href="/cabinet/msg">Личные сообщения</a>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+{% block postman_menu %}{% endblock %}
+        {% block info %}
+        Имя: {{user.get_profile.fullname}}<br>
+        e-mail: {{user.email}}<br>
+	Контакты: {{user.get_profile.info}}<br>
+	
+	{% if errors %}
+	    {% for error in errors %}
+	    {{error}}<br>
+	    {% endfor %}
+	{% endif %}
+	
+	<form action="." method="POST">{% csrf_token %}
+	<ul>
+	{{passform.as_ul}}
+        </ul>
+	<input type="submit" value="Изменить пароль">
+	</form>
+        {% endblock %}
+      </td>
+    </tr>
+</table>
+{%endblock %}
