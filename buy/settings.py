@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Django settings for buy project.
 
-DEBUG = True
+DEBUG = False
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -13,9 +13,9 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'buydb',
-        'USER': 'buy',
-        'PASSWORD': 'baraholka'
+        'NAME': 'shop',
+        'USER': 'vkorchagin',
+        'PASSWORD': 'rSmjQL8YJbCTczaL'
     }
 }
 
@@ -56,6 +56,7 @@ USE_I18N = True
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
 # ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX="/static/admin/"
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 't^*#g9u+!u1rv)9jejr+wwzy)s$fs^@uila&q8v_0_9)#10hsi'
@@ -100,10 +101,12 @@ MIDDLEWARE_CLASSES = (
     'pagination.middleware.PaginationMiddleware',
 )
 
-ROOT_URLCONF = 'buy.urls'
+#ROOT_URLCONF = 'buy.urls'
+ROOT_URLCONF = 'urls'
+FORCE_SCRIPT_NAME = ''
 
 TEMPLATE_DIRS = (
-    '/var/www/djcode/buy/templates',
+    '/vint/data/host/42b.ru/shop/buy/templates',
 )
 
 INSTALLED_APPS = (

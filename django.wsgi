@@ -1,11 +1,11 @@
 import sys
 import os
 
-path = '/var/www/djcode/'
+path = '/vint/data/host/42b.ru/shop/'
 if path not in sys.path:
   sys.path.append(path)
 
-buy_path = '/var/www/djcode/buy/'
+buy_path = '/vint/data/host/42b.ru/shop/buy/'
 if buy_path not in sys.path:
   sys.path.append(buy_path)
 
