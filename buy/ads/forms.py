@@ -3,6 +3,7 @@ from django import forms
 from buy.ads.models import Category
 from django.forms.util import ErrorList
 from django.contrib.auth.models import User
+from re import match
 
 
 class SimpleSearchForm(forms.Form):
@@ -85,6 +86,13 @@ class RegForm(forms.Form):
         if len(User.objects.filter(username=username)) != 0:
             self._errors['username'] = \
                 ErrorList(["Такое имя пользователя уже занято"])
+        # Check if username consists of letters, numbers, underscores and 
+        # whitespaces.
+        match_object = match("[\w ]+", username)
+        if match_object.group(0) != username:
+            self._errors['username'] = \
+                ErrorList(["Имя пользователя должно состоять из букв, цифр, "
+                           "знаков подчеркивания и пробелов"])
         return username
 
 
