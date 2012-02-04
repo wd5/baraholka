@@ -87,7 +87,7 @@ Refer to documentation.
 
 """
 from django.conf.urls.defaults import *
-from django.views.generic.simple import redirect_to
+from django.views.generic.simple import redirect_to 
 
 OPTION_MESSAGES = 'm'
 OPTIONS = OPTION_MESSAGES
@@ -97,7 +97,7 @@ urlpatterns = patterns('postman.views',
     url(r'^sent/(?:(?P<option>'+OPTIONS+')/)?$', 'sent', name='postman_sent'),
     url(r'^archives/(?:(?P<option>'+OPTIONS+')/)?$', 'archives', name='postman_archives'),
     url(r'^trash/(?:(?P<option>'+OPTIONS+')/)?$', 'trash', name='postman_trash'),
-    url(r'^write/(?:(?P<recipients>[\w.@+-:]+)/)?$', 'write', name='postman_write'),
+    url(r'^write/(?:(?P<recipients>[\w .@+-:]+)/)?$', 'write', name='postman_write'),
     url(r'^reply/(?P<message_id>[\d]+)/$', 'reply', name='postman_reply'),
     url(r'^view/(?P<message_id>[\d]+)/$', 'view', name='postman_view'),
     url(r'^view/t/(?P<thread_id>[\d]+)/$', 'view_conversation', name='postman_view_conversation'),
