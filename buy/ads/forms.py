@@ -4,46 +4,50 @@ from buy.ads.models import Category
 from django.forms.util import ErrorList
 from django.contrib.auth.models import User
 
+
 class SimpleSearchForm(forms.Form):
     category = forms.ChoiceField(label="")
     text = forms.CharField(label="")
-    
+
     def __init__(self, *args, **kwargs):
         super(SimpleSearchForm, self).__init__(*args, **kwargs)
-        cat_list=[(cat.id, cat.name) for cat in 
+        cat_list = [(cat.id, cat.name) for cat in
                   Category.objects.all().order_by('name')]
         self.fields['category'].choices = cat_list
+
 
 class CommentForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea, label='Комменть сюда')
 
+
 class AddForm(forms.Form):
-    name = forms.CharField(label="Название", max_length=100, 
-                           widget=forms.TextInput(attrs={'size':55}))
+    name = forms.CharField(label="Название", max_length=100,
+                           widget=forms.TextInput(attrs={'size': 55}))
+
     def clean_name(self):
         name = self.cleaned_data['name']
         if len(name.strip()) == 0:
             self._errors['name'] = ErrorList([u"Тема не может быть пустой!"])
         return name.strip()
-    
-    text = forms.CharField(widget=forms.Textarea(), label="Описание", 
+    text = forms.CharField(widget=forms.Textarea(), label="Описание",
                            required=False)
     category = forms.ChoiceField(label="Категория")
     price = forms.CharField(label="Цена", required=False, max_length=32)
     place = forms.CharField(label="Место", required=False, max_length=128)
     #image_main = forms.FileField(label="Рисунок")
-    
+
     def __init__(self, *args, **kwargs):
         super(AddForm, self).__init__(*args, **kwargs)
         cat_list=[(cat.id, cat.name) for cat in 
                   Category.objects.all().order_by('name')]
         self.fields['category'].choices = cat_list
 
+
 class PassChangeForm(forms.Form):
     old_pass = forms.CharField(label="Старый пароль")
     new_pass = forms.CharField(label="Новый пароль")
     renew_pass = forms.CharField(label="Повторите пароль")
-    
+
     def clean_new_pass(self):
         passw = self.cleaned_data['new_pass']
         if len(passw) < 5:
@@ -59,9 +63,8 @@ class PassChangeForm(forms.Form):
             msg = u"Пароли не совпадают."
             self._errors['new_pass'] = ErrorList([msg])
             self._errors['renew_pass'] = ErrorList([msg])
-        
-        del cleaned_data['new_pass']
-        del cleaned_data['renew_pass']
+            del cleaned_data['new_pass']
+            del cleaned_data['renew_pass']
     
         return cleaned_data
 
