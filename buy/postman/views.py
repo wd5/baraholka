@@ -49,7 +49,7 @@ def _folder(request, folder_name, view_name, option, template_name):
         'gets': request.GET, # useful to postman_order_by template tag
         }, context_instance=RequestContext(request))
 
-@login_required
+@login_required(login_url='/login/')
 def inbox(request, option=None, template_name='postman/inbox.html'):
     """
     Display the list of received messages for the current user.
@@ -63,7 +63,7 @@ def inbox(request, option=None, template_name='postman/inbox.html'):
     """
     return _folder(request, 'inbox', 'postman_inbox', option, template_name)
 
-@login_required
+@login_required(login_url='/login/')
 def sent(request, option=None, template_name='postman/sent.html'):
     """
     Display the list of sent messages for the current user.
@@ -73,7 +73,7 @@ def sent(request, option=None, template_name='postman/sent.html'):
     """
     return _folder(request, 'sent', 'postman_sent', option, template_name)
 
-@login_required
+@login_required(login_url='/login/')
 def archives(request, option=None, template_name='postman/archives.html'):
     """
     Display the list of archived messages for the current user.
@@ -83,7 +83,7 @@ def archives(request, option=None, template_name='postman/archives.html'):
     """
     return _folder(request, 'archives', 'postman_archives', option, template_name)
 
-@login_required
+@login_required(login_url='/login/')
 def trash(request, option=None, template_name='postman/trash.html'):
     """
     Display the list of deleted messages for the current user.
@@ -148,9 +148,9 @@ def write(request, recipients=None, form_classes=(WriteForm, AnonymousWriteForm)
         'next_url': request.GET.get('next', next_url),
         }, context_instance=RequestContext(request))
 if getattr(settings, 'POSTMAN_DISALLOW_ANONYMOUS', False):
-    write = login_required(write)
+    write = login_required(write, login_url='/login/')
 
-@login_required
+@login_required(login_url='/login/')
 def reply(request, message_id, form_class=FullReplyForm, formatters=(format_subject,format_body), autocomplete_channel=None,
         template_name='postman/reply.html', success_url=None,
         user_filter=None, exchange_filter=None, max=None, auto_moderators=[]):
@@ -238,12 +238,12 @@ def _view(request, filter, form_class=QuickReplyForm, formatters=(format_subject
             }, context_instance=RequestContext(request))
     raise Http404
 
-@login_required
+@login_required(login_url='/login/')
 def view(request, message_id, *args, **kwargs):
     """Display one specific message."""
     return _view(request, Q(pk=message_id), *args, **kwargs)
 
-@login_required
+@login_required(login_url='/login/')
 def view_conversation(request, thread_id, *args, **kwargs):
     """Display a conversation."""
     return _view(request, Q(thread=thread_id), *args, **kwargs)
@@ -278,17 +278,17 @@ def _update(request, field_bit, success_msg, field_value=None, success_url=None)
         messages.warning(request, _("Select at least one object."), fail_silently=True)
         return redirect(next_url)
 
-@login_required
+@login_required(login_url='/login/')
 def archive(request, *args, **kwargs):
     """Mark messages/conversations as archived."""
     return _update(request, 'archived', _("Messages or conversations successfully archived."), True, *args, **kwargs)
 
-@login_required
+@login_required(login_url='/login/')
 def delete(request, *args, **kwargs):
     """Mark messages/conversations as deleted."""
     return _update(request, 'deleted_at', _("Messages or conversations successfully deleted."), datetime.datetime.now(), *args, **kwargs)
 
-@login_required
+@login_required(login_url='/login/')
 def undelete(request, *args, **kwargs):
     """Revert messages/conversations from marked as deleted."""
     return _update(request, 'deleted_at', _("Messages or conversations successfully recovered."), *args, **kwargs)
