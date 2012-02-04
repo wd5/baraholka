@@ -1,6 +1,6 @@
 {% extends "postman/base.html" %}
 {% load i18n %}{% load postman_tags %}
-{% block info %}
+{% block content %}
 <div id="postman">
 <h1>{% if pm_messages|length > 1 %}{% trans "Conversation" %}{% else %}{% trans "Message" %}{% endif %}</h1>
 {% for message in pm_messages %}

@@ -35,7 +35,6 @@ import copy
 from datetime import datetime, timedelta
 import re
 import sys
-from time import sleep
 
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
@@ -53,7 +52,8 @@ from postman.fields import CommaSeparatedUserField
 from postman.models import ORDER_BY_KEY, ORDER_BY_MAPPER, Message, PendingMessage,\
     STATUS_PENDING, STATUS_ACCEPTED, STATUS_REJECTED
 from postman.urls import OPTION_MESSAGES
-from postman.utils import format_body, format_subject, notification
+# because of reload()'s, do "from postman.utils import notification" just before needs
+from postman.utils import format_body, format_subject
 
 if not 'pagination' in settings.INSTALLED_APPS:
     try:
@@ -70,7 +70,7 @@ class GenericTest(TestCase):
     Usual generic tests.
     """
     def test_version(self):
-        self.assertEqual(sys.modules['postman'].__version__, "1.0.0")
+        self.assertEqual(sys.modules['postman'].__version__, "1.1.0")
 
 class BaseTest(TestCase):
     """
@@ -84,11 +84,11 @@ class BaseTest(TestCase):
             'POSTMAN_DISALLOW_ANONYMOUS',
             'POSTMAN_DISALLOW_MULTIRECIPIENTS',
             'POSTMAN_DISALLOW_COPIES_ON_REPLY',
+            'POSTMAN_DISABLE_USER_EMAILING',
             'POSTMAN_AUTO_MODERATE_AS',
         ):
             if hasattr(settings, a):
                 delattr(settings, a)
-        settings.POSTMAN_NOTIFIER_APP = None
         settings.POSTMAN_MAILER_APP = None
         settings.POSTMAN_AUTOCOMPLETER_APP = {
             'arg_default': 'postman_single', # no default, mandatory to enable the feature
@@ -104,7 +104,7 @@ class BaseTest(TestCase):
         "Check that a date is now. Well... almost."
         delta = dt - datetime.now()
         seconds = delta.days * (24*60*60) + delta.seconds
-        self.assert_(-7 <= seconds <= 2) # consider the sleep() in create()
+        self.assert_(-2 <= seconds <= 1) # -1 is not enough for Mysql
 
     def check_status(self, m, status=STATUS_PENDING, is_new=True, is_replied=False, parent=None, thread=None,
         moderation_date=False, moderation_by=None, moderation_reason='',
@@ -148,10 +148,6 @@ class BaseTest(TestCase):
 
     def create(self, moderation_status=None, *args, **kwargs):
         "Create a message."
-        # need to sleep between creations
-        # otherwise some sent_at datetimes are equal and ordering predictions are disturbed
-        # sleep(0.03) is enough for sqlite but not for mysql ("... microseconds cannot be stored into a column of any temporal data type. Any microseconds part is discarded.")
-        sleep(1)
         if moderation_status:
             kwargs.update(moderation_status=moderation_status)
         return Message.objects.create(subject='s', *args, **kwargs)
@@ -176,6 +172,7 @@ class BaseTest(TestCase):
         "Reload some modules after a change in settings."
         clear_url_caches()
         try:
+            reload(sys.modules['postman.utils'])
             reload(sys.modules['postman.forms'])
             reload(sys.modules['postman.views'])
             reload(sys.modules['postman.urls'])
@@ -365,9 +362,9 @@ class ViewTest(BaseTest):
         del data['email']
         response = self.client.post(url, data, HTTP_REFERER=url)
         self.assertRedirects(response, url)
-        msgs = list(Message.objects.order_by('pk'))
-        self.check_message(msgs[0])
-        self.check_message(msgs[1], recipient_username='baz')
+        msgs = list(Message.objects.all())
+        self.check_message(msgs[0], recipient_username='baz')
+        self.check_message(msgs[1])
 
         url_with_max = reverse('postman_write_with_max')
         response = self.client.post(url_with_max, data, HTTP_REFERER=url)
@@ -454,7 +451,6 @@ class ViewTest(BaseTest):
         url = reverse('postman_reply_auto_complete', args=[pk])
         self.assert_(self.client.login(username='foo', password='pass'))
         response = self.client.get(url)
-        # print response.context
         f = response.context['form'].fields['recipients']
         if hasattr(f, 'channel'):
             self.assertEqual(f.channel, 'postman_multiple')
@@ -1274,50 +1270,72 @@ class MessageTest(BaseTest):
         # note: accepted -> pending, with no other suitable reply
         # is covered in the accepted -> rejected case
 
-    def check_notification(self, m, mail_number, email=None, notice_label=None):
+    def check_notification(self, m, mail_number, email=None, is_auto_moderated=True, notice_label=None):
         "Check number of mails, recipient, and notice creation."
-        m.notify_users(STATUS_PENDING)
+        m.notify_users(STATUS_PENDING, is_auto_moderated)
         self.assertEqual(len(mail.outbox), mail_number)
         if mail_number:
             self.assertEqual(mail.outbox[0].to, [email])
+        from utils import notification
         if notification and notice_label:
             notice = notification.Notice.objects.get()
             self.assertEqual(notice.notice_type.label, notice_label)
 
     def test_notification_rejection_visitor(self):
-        "Test notify_users() for rejection, from a visitor."
+        "Test notify_users() for rejection, sender is a visitor."
         m = Message.objects.create(subject='s', moderation_status=STATUS_REJECTED, email=self.email, recipient=self.user2)
         self.check_notification(m, 1, self.email)
 
     def test_notification_rejection_user(self):
-        "Test notify_users() for rejection, from a User."
+        "Test notify_users() for rejection, sender is a User."
         m = Message.objects.create(subject='s', moderation_status=STATUS_REJECTED, sender = self.user1, recipient=self.user2)
-        self.check_notification(m, 1, self.user1.email, notice_label='postman_rejection')
+        self.check_notification(m, 1, self.user1.email, is_auto_moderated=False, notice_label='postman_rejection')
+
+    def test_notification_rejection_user_auto_moderated(self):
+        "Test notify_users() for rejection, sender is a User, and is alerted online."
+        m = Message.objects.create(subject='s', moderation_status=STATUS_REJECTED, sender = self.user1, recipient=self.user2)
+        self.check_notification(m, 0, is_auto_moderated=True)
 
     def test_notification_rejection_user_inactive(self):
-        "Test notify_users() for rejection, from a User, but must be active."
+        "Test notify_users() for rejection, sender is a User, but must be active."
         m = Message.objects.create(subject='s', moderation_status=STATUS_REJECTED, sender = self.user1, recipient=self.user2)
         self.user1.is_active = False
-        self.check_notification(m, 0, notice_label='postman_rejection')
+        self.check_notification(m, 0, is_auto_moderated=False, notice_label='postman_rejection')
+
+    def test_notification_rejection_user_disable(self):
+        "Test notify_users() for rejection, sender is a User, but emailing is disabled."
+        m = Message.objects.create(subject='s', moderation_status=STATUS_REJECTED, sender = self.user1, recipient=self.user2)
+        settings.POSTMAN_DISABLE_USER_EMAILING = True
+        settings.POSTMAN_NOTIFIER_APP = None
+        self.reload_modules()
+        self.check_notification(m, 0, is_auto_moderated=False)
 
     def test_notification_acceptance_visitor(self):
-        "Test notify_users() for acceptance, to a visitor."
+        "Test notify_users() for acceptance, recipient is a visitor."
         m = Message.objects.create(subject='s', moderation_status=STATUS_ACCEPTED, sender=self.user1, email=self.email)
         self.check_notification(m, 1, self.email)
 
     def test_notification_acceptance_user(self):
-        "Test notify_users() for acceptance, to a User."
+        "Test notify_users() for acceptance, recipient is a User."
         m = Message.objects.create(subject='s', moderation_status=STATUS_ACCEPTED, sender=self.user1, recipient = self.user2)
         self.check_notification(m, 1, self.user2.email, notice_label='postman_message')
 
     def test_notification_acceptance_user_inactive(self):
-        "Test notify_users() for acceptance, to a User, but must be active."
+        "Test notify_users() for acceptance, recipient is a User, but must be active."
         m = Message.objects.create(subject='s', moderation_status=STATUS_ACCEPTED, sender=self.user1, recipient = self.user2)
         self.user2.is_active = False
         self.check_notification(m, 0, notice_label='postman_message')
 
+    def test_notification_acceptance_user_disable(self):
+        "Test notify_users() for acceptance, recipient is a User, but emailing is disabled."
+        m = Message.objects.create(subject='s', moderation_status=STATUS_ACCEPTED, sender=self.user1, recipient = self.user2)
+        settings.POSTMAN_DISABLE_USER_EMAILING = True
+        settings.POSTMAN_NOTIFIER_APP = None
+        self.reload_modules()
+        self.check_notification(m, 0, notice_label='postman_message')
+
     def test_notification_acceptance_reply(self):
-        "Test notify_users() for acceptance, for a reply, to a User."
+        "Test notify_users() for acceptance, for a reply, recipient is a User."
         p = Message.objects.create(subject='s', moderation_status=STATUS_ACCEPTED, sender=self.user2, recipient=self.user1)
         m = Message.objects.create(subject='s', moderation_status=STATUS_ACCEPTED, sender=self.user1, recipient=self.user2,
             parent=p, thread=p)

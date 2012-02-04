@@ -223,7 +223,7 @@ class Message(models.Model):
     class Meta:
         verbose_name = _("message")
         verbose_name_plural = _("messages")
-        ordering = ['-sent_at']
+        ordering = ['-sent_at', '-id']
 
     def __unicode__(self):
         return u"{0}>{1}:{2}".format(self.obfuscated_sender, self.obfuscated_recipient, truncate_words(self.subject,5))
@@ -389,11 +389,14 @@ class Message(models.Model):
                         parent.replied_at = None
                     parent.save()
 
-    def notify_users(self, initial_status):
+    def notify_users(self, initial_status, is_auto_moderated=True):
         """Notify the rejection (to sender) or the acceptance (to recipient) of the message."""
         if initial_status == STATUS_PENDING:
             if self.is_rejected():
-                (notify_user if self.sender_id else email_visitor)(self, 'rejection')
+                # Bypass: for an online user, no need to notify when rejection is immediate.
+                # Only useful for a visitor as an archive copy of the message, otherwise lost.
+                if not (self.sender_id and is_auto_moderated):
+                    (notify_user if self.sender_id else email_visitor)(self, 'rejection')
             elif self.is_accepted():
                 (notify_user if self.recipient_id else email_visitor)(self, 'acceptance')
 
