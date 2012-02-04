@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
     
     def __unicode__(self):
-	return self.name
+        return self.name
 
 class Advert(models.Model):
     user = models.ForeignKey(User)
@@ -25,7 +25,7 @@ class Advert(models.Model):
     sell = models.BooleanField()
   
     def __unicode__(self):
-	return self.name
+        return self.name
 
 #class Bet(models.Model):
     #price = models.IntegerField()
@@ -34,7 +34,7 @@ class Advert(models.Model):
     #advert = models.ForeignKey(Advert)
   
     #def __unicode__(self):
-	#return '%s %s' % (self.advert, self.price)
+        #return '%s %s' % (self.advert, self.price)
     
 class Comment(models.Model):
     advert = models.ForeignKey(Advert)
@@ -44,7 +44,7 @@ class Comment(models.Model):
     text = models.TextField()
     
     def __unicode__(self):
-	return 'comment %s %s' % (self.user, self.advert)
+        return 'comment %s %s' % (self.user, self.advert)
 
 class PrivateMessage(models.Model):
     user_from = models.ForeignKey(User, related_name='user_from')
@@ -54,7 +54,7 @@ class PrivateMessage(models.Model):
     unread = models.BooleanField()
     
     def __unicode__(self):
-	return 'from %s to %s' % (self.user_from, self.user_to)
+        return 'from %s to %s' % (self.user_from, self.user_to)
 
 class News(models.Model):
     created = models.DateField(auto_now_add=True)
@@ -63,8 +63,8 @@ class News(models.Model):
     text = models.TextField()
     
     def __unicode__(self):
-	return self.name
-	
+        return self.name
+
 class NewsComment(models.Model):
     news = models.ForeignKey(News)
     created = models.DateTimeField(auto_now_add=True)
@@ -73,12 +73,12 @@ class NewsComment(models.Model):
     text = models.TextField()
     
     def __unicode__(self):
-	return 'comment %s %s' % (self.user, self.advert)
-	
+        return 'comment %s %s' % (self.user, self.advert)
+
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
     fullname = models.CharField(max_length=128, blank = True)
     info = models.TextField()
     
     def __unicode__(self):
-	return '%s profile' % (self.user.username)
+        return '%s profile' % (self.user.username)
