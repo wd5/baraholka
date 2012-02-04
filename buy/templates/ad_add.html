@@ -35,7 +35,7 @@ return false;
 {% autoescape off %}
 <font style='font-size:125%'>
     {% for error in errors %}
-	{{error}} <br>
+	{{error}} <br><br>
     {% endfor %}
 </font>
 {% endautoescape %}
@@ -68,8 +68,8 @@ return false;
     {{addform.text}}<br>
     <b>Цена (не обязательно):</b>{{addform.price}}<br><br>
     <b>Место (не обязательно):</b>{{addform.place}}<br><br>
-<input name="preview" type="submit" value="Предварительный просмотр">    
-<input name="post" type="submit" value="Добавить">
+<input name="preview" type="submit" value="Предварительный просмотр" {% if not user.is_authenticated %} disabled="disabled" {% endif %}>    
+<input name="post" type="submit" value="Добавить" {% if not user.is_authenticated %} disabled="disabled" {% endif %}>
     </form>
 </div>
 {%endblock %}

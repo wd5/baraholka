@@ -39,15 +39,18 @@ class AddForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(AddForm, self).__init__(*args, **kwargs)
-        cat_list=[(cat.id, cat.name) for cat in 
-                  Category.objects.all().order_by('name')]
+        cat_list = [(cat.id, cat.name) for cat in
+                    Category.objects.all().order_by('name')]
         self.fields['category'].choices = cat_list
 
 
 class PassChangeForm(forms.Form):
-    old_pass = forms.CharField(label="Старый пароль")
-    new_pass = forms.CharField(label="Новый пароль")
-    renew_pass = forms.CharField(label="Повторите пароль")
+    old_pass = forms.CharField(label="Старый пароль",
+                               widget=forms.PasswordInput())
+    new_pass = forms.CharField(label="Новый пароль",
+                               widget=forms.PasswordInput())
+    renew_pass = forms.CharField(label="Повторите пароль",
+                                 widget=forms.PasswordInput())
 
     def clean_new_pass(self):
         passw = self.cleaned_data['new_pass']

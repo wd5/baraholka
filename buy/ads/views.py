@@ -159,7 +159,7 @@ def ad_add(request):
     if not request.user.is_authenticated():
         errors.append(u'<a href="/reg">Зарегистрируйтесь</a> или '
                       u'<a href="/login">войдите</a>, '
-                      u'чтобы добавлять комментарии.')
+                      u'чтобы добавлять объявления.')
         addform = AddForm()
     if request.method == 'POST' and user.is_authenticated():
         addform = AddForm(request.POST)
