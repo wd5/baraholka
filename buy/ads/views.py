@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
 
 from django.core.cache import cache
+from django.http import Http404
 
 
 @csrf_protect
@@ -52,7 +53,10 @@ def ad_show(request, num):
     news_list = News.objects.all().order_by('-created')[0:2]
     buy_ads = Advert.objects.filter(sell=False).order_by('-created')[0:5]
     #center column
-    ad = Advert.objects.get(id=num)
+    try:
+        ad = Advert.objects.get(id=num)
+    except Advert.DoesNotExist:
+        raise Http404
     image_list = []
     comments_list = Comment.objects.filter(advert=ad).order_by('created')
     errors = []
