@@ -1,6 +1,21 @@
-{% extends "cabinet.html" %}
+{% extends "main.html" %}
 {% load i18n %}{% load postman_tags %}
 {% block title %}{% trans "Messaging" %}{% endblock %}
+{% block content %}
+<table width="100%">
+    <tr>
+      <td>
+        <a href="/cabinet">Профиль</a>
+      </td>
+      <td>
+    <a href="/cabinet/ads">Мои объявы</a>
+      </td>
+      <td>
+        <a href="/cabinet/msg">Личные сообщения{% if postman_unread_count%}({{postman_unread_count}}){% endif %}</a>
+      </td>
+    </tr>
+    <tr>
+      <td width=250px>
 {% block postman_menu %}
 <ul id="postman_menu">{% postman_unread as unread_count %}
  <li><a href="{% url postman_inbox %} ">&raquo;&nbsp;{% trans "Inbox" %}{% if unread_count %} <strong>({{ unread_count }})</strong>{% endif %}</a></li>
@@ -10,3 +25,11 @@
  <li><a href="{% url postman_trash %} ">&raquo;&nbsp;{% trans "Trash" %}</a></li>
 </ul>
 {% endblock %}
+      </td>
+      <td  colspan="2">
+        {% block info %}
+        {% endblock %}
+      </td>
+    </tr>
+</table>
+{%endblock %}

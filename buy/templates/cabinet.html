@@ -10,7 +10,7 @@
 	<a href="/cabinet/ads">Мои объявы</a>
       </td>
       <td>
-        <a href="/cabinet/msg">Личные сообщения</a>
+        <a href="/cabinet/msg">Личные сообщения{% if postman_unread_count%}({{postman_unread_count}}){% endif %}</a>
       </td>
     </tr>
     <tr>

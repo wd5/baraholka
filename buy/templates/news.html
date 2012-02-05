@@ -8,7 +8,7 @@
     {% load bbcode %}
     {{news.text|bbcode}}<hr>
     {% for comment in comments_list %}
-    Комментрий пользователя {{comment.user}}, оставлен {{comment.created}}<br>
+    <small>Комментрий пользователя {% ifequal user comment.user %}<b style='color:red'>{% else %}<b style='color:darkgreen'>{% endifequal %}{{comment.user}}</b>, оставлен {{comment.created}}</small><br>
     {{comment.text|bbcode}}<hr>
     {% endfor %}
     <center>

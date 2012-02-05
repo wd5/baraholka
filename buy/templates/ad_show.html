@@ -3,7 +3,7 @@
 {% block center %}
 <div align='center'>
     <font style='font-size:125%'><b>[{{ ad.category }}] {{ad.name}}</font></b><br>
-    Сообщение было послано: {{ad.user}} <a href="{% url postman_write ad.user %}">(Написать)</a><br>
+    Сообщение было послано: {% ifequal user ad.user %}<b style='color:red'>{% else %}<b style='color:darkgreen'>{% endifequal %}{{ad.user}}</b> <a href="{% url postman_write ad.user %}">(Написать)</a><br>
     Дата: {{ad.created|date:"l, F j G:i:s Y"}}
 </div>
     <br><br>
@@ -23,7 +23,7 @@
     <b>Место:</b> {{ad.place}}<hr>
     {% endif %}
     {% for comment in comments_list %}
-    Комментрий пользователя {{comment.user}} <a href="{% url postman_write comment.user %}">(Написать)</a>, оставлен {{comment.created}}<br>
+    <small>Комментрий пользователя {% ifequal user comment.user %}<b style='color:red'>{% else %}<b style='color:darkgreen'>{% endifequal %}{{comment.user}}</b> <a href="{% url postman_write comment.user %}">(Написать)</a>, оставлен {{comment.created}}</small><br>
     {{comment.text|bbcode}}<hr>
     {% endfor %}
     <center>

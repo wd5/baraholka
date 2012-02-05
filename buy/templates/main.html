@@ -75,8 +75,9 @@
 </div>
 {% endblock %}
 {% endblock %}
-     </div><!-- end of content -->	
+     </div><!-- end of content -->	     
      <div id="leftsidebar">
+     {% block leftsidebar %}
 	<b>Категории:</b>
 	<div class="SidebarItem"><a href='/'>Все</a></div>
 	{% for category in category_list %}
@@ -92,12 +93,13 @@
         </ul>
         <div style='font-size:75%;text-align:right;'><a href='/news'>все</a></div>
         <hr size='1' noshade>
+     {% endblock %}
      </div><!-- end of sidebar -->
 {% endblock %}
   </div><!-- end innerwrapper -->  
 
 <div id="footer">
-	<p><span style="float: left;">&#169; 2011 Барахолка</span><span style="float: right;">Сделал <a href="http://board.rt.mipt.ru/index-tmp.cgi?uinfo=Rocker" title="Rocker">Rocker</a>, помогал <a href="http://board.rt.mipt.ru/index-tmp.cgi?uinfo=Spasitel" title="Spasitel">Spasitel</a></span>
+	<p><span style="float: left;">&#169; 2012 Барахолка</span><span style="float: right;">Сделал <a href="http://board.rt.mipt.ru/index-tmp.cgi?uinfo=Rocker" title="Rocker">Rocker</a>, помогал <a href="http://board.rt.mipt.ru/index-tmp.cgi?uinfo=Spasitel" title="Spasitel">Spasitel</a></span>
     </p>
 </div><!-- end of footer -->
 </div><!-- end of outerwrapper -->

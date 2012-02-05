@@ -2,7 +2,7 @@
 {% load i18n postman_tags %}{% load pagination_tags %}
 {% block info %}
 <div id="postman">
-<h1>{% block pm_folder_title %}{% endblock %}</h1>
+<h1>{% block pm_folder_title %}{% endblock %}</h1><br>
 {% if pm_messages %}
 {% autopaginate pm_messages %}
 {% if invalid_page %}
