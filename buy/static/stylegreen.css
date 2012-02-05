@@ -4,7 +4,7 @@
    padding: 0; }
 body {
    color: #000000;
-   font-family: 'Trebuchet MS', Arial, Verdana, Helvetica, sans-serif;
+   /*font-family: 'Trebuchet MS', Arial, Verdana, Helvetica, sans-serif;*/
    font-size: 100%;
    background: white repeat-x; }
 
@@ -31,7 +31,7 @@ body {
 /*   border-left: 2px dotted black;
    border-right: 2px dotted black;*/
 }
-#ad a {
+#item a {
    text-decoration: none;
 }
 #midsidebar { /* C-S-S Layout */
@@ -64,7 +64,7 @@ code, pre {font-size: 1.2em;
 	color:#404040; }
 blockquote:before, blockquote:after {content: "\"";
 	font-size: 16pt;
-	font-family: serif; }
+	/*font-family: serif;*/ }
 blockquote {
 	margin: 10px 0 0 0; 
 	padding: 5px;
@@ -120,7 +120,7 @@ input.button {
 /*    border: 1px solid #499279;  */
 }
 input, select, textarea {
-   font-family: Arial, Helvetica, sans-serif; 
+   /*font-family: Arial, Helvetica, sans-serif;*/ 
    font-size: 1.0em; }
 h2 {
    font-size: 1.25em;
@@ -161,7 +161,7 @@ img.float-left {
 }
 #identity {
    height: 50px;
-   width: 410px;
+   width: 900px;
    border: 0px;
    float: left; }
 #identity h1 {
