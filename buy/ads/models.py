@@ -2,11 +2,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
-    
+
     def __unicode__(self):
         return self.name
+
 
 class Advert(models.Model):
     user = models.ForeignKey(User)
@@ -23,7 +25,7 @@ class Advert(models.Model):
     is_selled = models.BooleanField()
     #is_auction = models.BooleanField()
     sell = models.BooleanField()
-  
+
     def __unicode__(self):
         return self.name
 
@@ -32,19 +34,21 @@ class Advert(models.Model):
     #date = models.DateTimeField(auto_now_add=True)
     #user = models.ForeignKey(User)
     #advert = models.ForeignKey(Advert)
-  
+
     #def __unicode__(self):
         #return '%s %s' % (self.advert, self.price)
-    
+
+
 class Comment(models.Model):
     advert = models.ForeignKey(Advert)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     text = models.TextField()
-    
+
     def __unicode__(self):
-        return 'comment %s %s' % (self.user, self.advert)
+        return u"comment %s %s" % (self.user, self.advert)
+
 
 class PrivateMessage(models.Model):
     user_from = models.ForeignKey(User, related_name='user_from')
@@ -52,18 +56,20 @@ class PrivateMessage(models.Model):
     created = models.DateField(auto_now_add=True)
     text = models.TextField()
     unread = models.BooleanField()
-    
+
     def __unicode__(self):
         return 'from %s to %s' % (self.user_from, self.user_to)
+
 
 class News(models.Model):
     created = models.DateField(auto_now_add=True)
     modified = models.DateField(auto_now=True)
     name = models.CharField(max_length=100)
     text = models.TextField()
-    
+
     def __unicode__(self):
         return self.name
+
 
 class NewsComment(models.Model):
     news = models.ForeignKey(News)
@@ -71,14 +77,15 @@ class NewsComment(models.Model):
     modified = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     text = models.TextField()
-    
+
     def __unicode__(self):
         return 'comment %s %s' % (self.user, self.advert)
 
+
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
-    fullname = models.CharField(max_length=128, blank = True)
+    fullname = models.CharField(max_length=128, blank=True)
     info = models.TextField()
-    
+
     def __unicode__(self):
         return '%s profile' % (self.user.username)
