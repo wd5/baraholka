@@ -92,7 +92,8 @@ class RegForm(forms.Form):
         # Check if username consists of letters, numbers, underscores and 
         # whitespaces.
         match_object = match("[\w ]+", username)
-        if match_object.group(0) != username:
+        if (match_object and match_object.group(0) != username) \
+                or not match_object:
             self._errors['username'] = \
                 ErrorList(["Имя пользователя должно состоять из букв, цифр, "
                            "знаков подчеркивания и пробелов"])
@@ -108,8 +109,14 @@ class RegForm(forms.Form):
 
     def clean(self):
         cleaned_data = self.cleaned_data
-        passwd = cleaned_data['passw']
-        passwd_again = cleaned_data['passw_again']
+        passwd = passwd_again = None
+        if 'passw' in cleaned_data.keys() \
+                and 'passw_again' in cleaned_data.keys():
+            passwd = cleaned_data['passw']
+            passwd_again = cleaned_data['passw_again']
+        else:
+            self._errors['passw'] = \
+                ErrorList(["Пароль должен быть длиннее 4 символов"])
         if passwd and passwd_again and passwd != passwd_again:
             msg = u"Пароли не совпадают."
             self._errors['passw'] = ErrorList([msg])
