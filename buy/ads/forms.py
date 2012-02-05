@@ -91,6 +91,15 @@ class RegForm(forms.Form):
                 ErrorList(["Такое имя пользователя уже занято"])
         # Check if username consists of letters, numbers, underscores and 
         # whitespaces.
+        if len(username) != 0 and username[0].isspace() \
+                and username[-1].isspace():
+            self._errors['username'] = \
+                ErrorList(["Имя пользователя не должно начинаться или "
+                           "заканчиваться пробелом"])
+        if "  " in username:
+            self._errors['username'] = \
+            ErrorList(['В имени пользователя не должно быть подряд двух ' 
+                       'пробелов'])
         match_object = match("[\w ]+", username)
         if (match_object and match_object.group(0) != username) \
                 or not match_object:
