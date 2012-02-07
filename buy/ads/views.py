@@ -14,45 +14,38 @@ from django.core.cache import cache
 from django.http import Http404
 
 
+def common_processor(request):
+    return {'form': SimpleSearchForm(), 'user': request.user,
+            'category_list': Category.objects.all().order_by('id'),
+            'news_list': News.objects.all().order_by('-created')[0:2],
+            'buy_ads': Advert.objects.filter(sell=False).\
+                           order_by('-created')[0:5]}
+
+
 @csrf_protect
 def main(request, p_num):
     #to_return = cache.get('main')
     #if to_return != None:
         #return to_return
+    #context = RequestContext(request, [common_processor])
     p_num = int(p_num)
-    #top
-    form = SimpleSearchForm()
-    #left column
-    category_list = Category.objects.all().order_by('id')
-    #right column
-    news_list = News.objects.all().order_by('-created')[0:2]
-    buy_ads = Advert.objects.filter(sell=False).order_by('-created')[0:5]
     #center column
     ads_list = Advert.objects.filter(sell=True).\
                 order_by('-created')[(p_num - 1) * 25: (p_num - 1) * 25 + 25]
     section = "adverts"
-    user = request.user
     #paging
     adv_num = len(Advert.objects.filter(sell=True))
     pages_num = range(1, adv_num / 25 + (1 if adv_num % 25 == 0 else 2))
 
     to_return = render_to_response('main.html', locals(),
-                                   context_instance=RequestContext(request))
+        context_instance=RequestContext(request,
+                                        processors=[common_processor]))
     #cache.set('main', to_return)
     return to_return
 
 
 @csrf_protect
 def ad_show(request, num):
-    #top
-    form = SimpleSearchForm()
-    user = request.user
-    #left column
-    category_list = Category.objects.all().order_by('id')
-    #right column
-    news_list = News.objects.all().order_by('-created')[0:2]
-    buy_ads = Advert.objects.filter(sell=False).order_by('-created')[0:5]
-    #center column
     try:
         ad = Advert.objects.get(id=num)
     except Advert.DoesNotExist:
@@ -76,34 +69,19 @@ def ad_show(request, num):
     else:
         comform = CommentForm()
     return render_to_response('ad_show.html', locals(),
-                              context_instance=RequestContext(request))
+        context_instance=RequestContext(request,
+                                        processors=[common_processor]))
 
 
 def news_all_show(request):
-    #top
-    form = SimpleSearchForm()
-    user = request.user
-    #left column
-    category_list = Category.objects.all().order_by('id')
-    #right column
-    news_list = News.objects.all().order_by('-created')[0:2]
-    buy_ads = Advert.objects.filter(sell=False).order_by('-created')[0:5]
-    #center column
     news_all_list = News.objects.all().order_by('-created')
-    return render_to_response('news_all.html', locals())
+    return render_to_response('news_all.html', locals(),
+        context_instance=RequestContext(request,
+                                        processors=[common_processor]))
 
 
 @csrf_protect
 def news_show(request, num):
-    #top
-    form = SimpleSearchForm()
-    user = request.user
-    #left column
-    category_list = Category.objects.all().order_by('id')
-    #right column
-    news_list = News.objects.all().order_by('-created')[0:2]
-    buy_ads = Advert.objects.filter(sell=False).order_by('-created')[0:5]
-    #center column
     news = News.objects.get(id=num)
     comments_list = NewsComment.objects.filter(news=news).order_by('-created')
     errors = []
@@ -123,40 +101,25 @@ def news_show(request, num):
     else:
         comform = CommentForm()
     return render_to_response('news.html', locals(),
-                              context_instance=RequestContext(request))
+        context_instance=RequestContext(request,
+                                        processors=[common_processor]))
 
 
 def cat_list(request, num, p_num):
     p_num = int(p_num)
-    user = request.user
-    #top
-    form = SimpleSearchForm()
-    #left column
-    category_list = Category.objects.all().order_by('id')
-    #right column
-    news_list = News.objects.all().order_by('-created')[0:2]
-    buy_ads = Advert.objects.filter(sell=False).order_by('-created')[0:5]
-    #center column
     ads_list = Advert.objects.filter(sell=True, category=num).\
         order_by('-created')[(p_num - 1) * 25: (p_num - 1) * 25 + 25]
     #paging
     adv_num = len(Advert.objects.filter(sell=True, category=num))
     pages_num = range(1, adv_num / 25 + (1 if adv_num % 25 == 0 else 2))
 
-    return render_to_response('main.html', locals())
+    return render_to_response('main.html', locals(),
+        context_instance=RequestContext(request,
+                                        processors=[common_processor]))
 
 
 @csrf_protect
 def ad_add(request):
-    #top
-    form = SimpleSearchForm()
-    user = request.user
-    #left column
-    category_list = Category.objects.all().order_by('id')
-    #right column
-    news_list = News.objects.all().order_by('-created')[0:2]
-    buy_ads = Advert.objects.filter(sell=False).order_by('-created')[0:5]
-    #center
     addform = AddForm()
     section = 'new'
     errors = []
@@ -165,7 +128,7 @@ def ad_add(request):
                       u'<a href="/login">войдите</a>, '
                       u'чтобы добавлять объявления.')
         addform = AddForm()
-    if request.method == 'POST' and user.is_authenticated():
+    if request.method == 'POST' and request.user.is_authenticated():
         addform = AddForm(request.POST)
         if addform.is_valid():
             cd = addform.cleaned_data
@@ -180,20 +143,13 @@ def ad_add(request):
             elif u"preview" in request.POST.keys():
                 preview = True
     return render_to_response('ad_add.html', locals(),
-                              context_instance=RequestContext(request))
+        context_instance=RequestContext(request,
+                                        processors=[common_processor]))
 
 
 @csrf_protect
 def cabinet(request):
-    #top
-    form = SimpleSearchForm()
     user = request.user
-    #left column
-    category_list = Category.objects.all().order_by('id')
-    #right column
-    news_list = News.objects.all().order_by('-created')[0:2]
-    buy_ads = Advert.objects.filter(sell=False).order_by('-created')[0:5]
-    #center
     if not user.is_authenticated():
         msg = u"<a href=\"/reg\">Зарегистрируйтесь</a> или "\
               u"<a href=\"/login\">войдите</a>."
@@ -213,19 +169,12 @@ def cabinet(request):
         passform = PassChangeForm()
     section = 'cabinet'
     return render_to_response('cabinet.html', locals(),
-                              context_instance=RequestContext(request))
+        context_instance=RequestContext(request,
+                                        processors=[common_processor]))
 
 
 def my_ads_list(request):
-    #top
-    form = SimpleSearchForm()
     user = request.user
-    #left column
-    category_list = Category.objects.all().order_by('id')
-    #right column
-    news_list = News.objects.all().order_by('-created')[0:2]
-    buy_ads = Advert.objects.filter(sell=False).order_by('-created')[0:5]
-    #center
     if not user.is_authenticated():
         msg = u"<a href=\"/reg\">Зарегистрируйтесь</a> или "\
               u"<a href=\"/login\">войдите</a>."
@@ -233,26 +182,22 @@ def my_ads_list(request):
 
     ads_list = Advert.objects.filter(sell=True, user=user).order_by('-created')
     section = 'cabinet'
-    return render_to_response('my_ads_list.html', locals())
+    return render_to_response('my_ads_list.html', locals(),
+        context_instance=RequestContext(request,
+                                        processors=[common_processor]))
 
 
 def msg_list(request):
-    #top
-    form = SimpleSearchForm()
     user = request.user
-    #left column
-    category_list = Category.objects.all().order_by('id')
-    #right column
-    news_list = News.objects.all().order_by('-created')[0:2]
-    buy_ads = Advert.objects.filter(sell=False).order_by('-created')[0:5]
-    #center
     if not user.is_authenticated():
         msg = u"<a href=\"/reg\">Зарегистрируйтесь</a> или войдите"
         return render_to_response('msg.html', locals())
 
     message_list = PrivateMessage.objects.filter(user_from=user, user_to=user)
     section = 'cabinet'
-    return render_to_response('msg_list.html', locals())
+    return render_to_response('msg_list.html', locals(),
+        context_instance=RequestContext(request,
+                                        processors=[common_processor]))
 
 
 def reg(request):
