@@ -26,15 +26,13 @@
 <div id="outerwrapper">
 
 <div id="head">
-     <div id="topbar">
-        <div id="identity">
-	    <div style="float: left;"><a href="/"><img style="padding: 0 !important;" src="/static/img/logo_black.jpg" alt="Барахолка Физтеха"></a></div>
-	    <div style="height: 65px; line-height:60px !important">   <font size=20pt style=" vertical-align: bottom; color: #404040"><a href='/'>Барахолка</a></font></div>
-	       <p class='head2'><strong>Здесь вы можете купить или продать что-нибудь на Физтехе!</strong></p>
-	</div><!-- end of identity -->
-
-        <div id="pagetop">
-           <div id="topnav">
+	<div id="topbar">
+		<div id="identity">
+			<div style="float: left;"><a href="/"><img style="padding: 0 !important;" src="/static/img/logo_black.jpg" alt="Барахолка Физтеха"></a></div>
+			<div style="height: 65px; line-height:60px !important">   <font size=20pt style=" vertical-align: bottom; color: #404040"><a href='/'>Барахолка</a></font></div>
+			<p class='head2'><strong>Здесь вы можете купить или продать что-нибудь на Физтехе!</strong></p>
+			
+			<div id="topnav">
                <ul>{% if user.is_authenticated %}
                       <li><h3>Привет, <b style='color:red'>{{ user.username }}</b>!</h3></li>
                       <li><h3><a href="/logout" rel="nofollow">Выйти</a>  </h3></li>
@@ -43,10 +41,10 @@
       		      <li><h3><a href="/reg" rel="nofollow">Зарегистрироваться</a></h3></li>
                     {% endif %}
                </ul>
-           </div><!-- end of topnav -->
-        </div><!-- end of pagetop -->
-   </div><!-- end of topbar -->
-   <div id="navigation">
+			</div><!-- end of topnav -->
+		</div><!-- end of identity -->
+	</div><!-- end of topbar -->
+	<div id="navigation">
       <div id="navbar_link">
         <ul>
            <li {% ifequal section 'adverts' %} class="currentpage" {% endifequal %}><a href='/'>Объявления</a></li>
