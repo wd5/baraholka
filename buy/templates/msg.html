@@ -2,6 +2,8 @@
 
 {% block content %}
     <center>
-	<h2>{% autoescape off %} {{msg}}{% endautoescape %} </h2>
+	{% block message %}
+	   <h2>{% autoescape off %}{{msg}}{% endautoescape %} </h2>
+	{% endblock %}
     </center>
 {%endblock %}

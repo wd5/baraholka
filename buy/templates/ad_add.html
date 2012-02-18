@@ -17,6 +17,7 @@ return false;
 {% block center %}
 {% if preview %}
 <div align='center'>
+    <font style='font-size:150%; color:green'><b>Это всего лишь предпросмотр!</b></font><br>
     <font style='font-size:125%'><b>[{{ ad.category }}] {{ad.name}}</font></b><br>
     Сообщение было послано: {{ad.user}}
 </div>
@@ -27,8 +28,9 @@ return false;
     <b>Цена:</b> {{ad.price}}<hr>
     {% endif %}
     {% if ad.place %}
-    <b>Цена:</b> {{ad.place}}<hr>
+    <b>Место:</b> {{ad.place}}<hr>
     {% endif %}
+    <hr><br>
 {% endif %}
 <div align='center'>
 {% if errors %}
@@ -69,7 +71,7 @@ return false;
     <b>Цена (не обязательно):</b>{{addform.price}}<br><br>
     <b>Место (не обязательно):</b>{{addform.place}}<br><br>
 <input name="preview" type="submit" value="Предварительный просмотр" {% if not user.is_authenticated %} disabled="disabled" {% endif %}>    
-<input name="post" type="submit" value="Добавить" {% if not user.is_authenticated %} disabled="disabled" {% endif %}>
+<input name="post" type="submit" value="{% if not ad_edit %}Добавить{% else %}Сохранить изменения{% endif %}" {% if not user.is_authenticated %} disabled="disabled" {% endif %}>
     </form>
 </div>
 {%endblock %}

@@ -1,0 +1,10 @@
+{% extends "msg.html" %}
+
+{% block message %}
+Вы действительно хотите пометить объявление как проданное? <br>
+В этом случае оно больше не будет отображаться в списке на главной странице.<br><br>
+<form action="." method="post">{% csrf_token %}
+<input name="no" type="submit" value="Нет, оставить объявление">    
+<input name="yes" type="submit" value="Да, убрать объявление">
+</form>
+{% endblock %}

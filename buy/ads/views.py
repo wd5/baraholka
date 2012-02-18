@@ -30,7 +30,7 @@ def main(request, p_num):
     #context = RequestContext(request, [common_processor])
     p_num = int(p_num)
     #center column
-    ads_list = Advert.objects.filter(sell=True).\
+    ads_list = Advert.objects.filter(sell=True, is_selled=False).\
                 order_by('-created')[(p_num - 1) * 25: (p_num - 1) * 25 + 25]
     section = "adverts"
     #paging
@@ -143,6 +143,65 @@ def ad_add(request):
             elif u"preview" in request.POST.keys():
                 preview = True
     return render_to_response('ad_add.html', locals(),
+        context_instance=RequestContext(request,
+                                        processors=[common_processor]))
+
+
+@csrf_protect
+def ad_edit(request, num):
+    try:
+        ad = Advert.objects.get(id=num)
+    except Advert.DoesNotExist:
+        raise Http404
+    user = request.user
+    if ad.user != user:
+        msg = 'Нельзя редактировать чужие объявления.'
+        return render_to_response('msg.html', locals())
+    addform = AddForm({'name':     ad.name,
+                       'text':     ad.text,
+                       'category': ad.category.id,
+                       'price':    ad.price,
+                       'place':    ad.place})
+    if request.method == 'POST':
+        addform = AddForm(request.POST)
+        if addform.is_valid():
+            cd = addform.cleaned_data
+            ad.name = cd['name']
+            ad.text = cd['text']
+            ad.category = Category.objects.get(id=int(cd['category']))
+            ad.price = cd['price']
+            ad.place = cd['place']
+            if u"post" in request.POST.keys():
+                ad.save()
+                cache.delete('all_ads')
+                cache.delete('main')
+                return HttpResponseRedirect('/')
+            elif u"preview" in request.POST.keys():
+                preview = True
+    ad_edit = True
+    return render_to_response('ad_add.html', locals(),
+        context_instance=RequestContext(request,
+                                        processors=[common_processor]))
+
+
+@csrf_protect
+def ad_archive(request, num):
+    try:
+        ad = Advert.objects.get(id=num)
+    except Advert.DoesNotExist:
+        raise Http404
+    user = request.user
+    if ad.user != user:
+        msg = 'Нельзя редактировать чужие объявления.'
+        return render_to_response('msg.html', locals())
+    if request.method == 'POST':
+        if u"yes" in request.POST.keys():
+            ad.is_selled = True
+            ad.save()
+            return HttpResponseRedirect('/')
+        if u"no" in request.POST.keys():
+            return HttpResponseRedirect('/ads/%d' % ad.id)
+    return render_to_response('twobuttons.html', locals(),
         context_instance=RequestContext(request,
                                         processors=[common_processor]))
 

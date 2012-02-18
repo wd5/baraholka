@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, include
 from buy.ads.views import ad_show, main, news_all_show, news_show, cat_list,\
-                          ad_add, cabinet, my_ads_list, reg
+                          ad_add, cabinet, my_ads_list, reg, ad_edit,\
+                          ad_archive
 from django.contrib.auth.views import login, logout
 from postman import urls as postman_urls
 
@@ -15,6 +16,8 @@ urlpatterns = patterns('',
     (r'^login/$', login),
     (r'^logout/$', logout),
     (r'^ads/(?P<num>\d+)/$', ad_show),
+    (r'^edit/(?P<num>\d+)/$', ad_edit),
+    (r'^archive/(?P<num>\d+)/$', ad_archive),
     (r'^$', main, {'p_num': '1'}),
     (r'^page/(?P<p_num>\d+)/$', main),
     (r'^news/$', news_all_show),
