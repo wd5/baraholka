@@ -83,7 +83,7 @@ def news_all_show(request):
 @csrf_protect
 def news_show(request, num):
     news = News.objects.get(id=num)
-    comments_list = NewsComment.objects.filter(news=news).order_by('-created')
+    comments_list = NewsComment.objects.filter(news=news).order_by('created')
     errors = []
     if request.method == 'POST':
         if not request.user.is_authenticated():
