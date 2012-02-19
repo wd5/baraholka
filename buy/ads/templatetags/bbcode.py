@@ -13,6 +13,7 @@ def bbcode(value):
     @see: http://code.google.com/p/postmarkup/
     
     """ 
+    value = value.replace('[pic]','[img]').replace('[/pic]','[/img]')
     try:
         from postmarkup import render_bbcode
     except ImportError:
