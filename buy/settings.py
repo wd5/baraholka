@@ -10,6 +10,8 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+DEFAULT_FROM_EMAIL = "noreply@buy.fizteh.ru"
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
