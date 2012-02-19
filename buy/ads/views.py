@@ -82,7 +82,10 @@ def news_all_show(request):
 
 @csrf_protect
 def news_show(request, num):
-    news = News.objects.get(id=num)
+    try:
+        news = News.objects.get(id=num)
+    except News.DoesNotExist:
+        raise Http404
     comments_list = NewsComment.objects.filter(news=news).order_by('created')
     errors = []
     if request.method == 'POST':
