@@ -6,14 +6,64 @@
 	{{regform.errors}}
     {% endif %}
 <form action='.' method='post'>{% csrf_token %}
-<form action="." method="post">
-    <b>Имя пользователя:</b>{{regform.username}}<br><br>
-<b>Пароль:</b>{{regform.passw}}<br><br>
-<b>Пароль еще раз:</b>{{regform.passw_again}}<br><br>
-<b>Полное имя:</b>{{regform.fullname}}<br><br>
-<b>E-mail адрес:</b>{{regform.email}}<br><br>
-<b>Контактная информация:</b>{{regform.info}}<br>
-<input type="submit" value="Зарегистрироваться">
+<table>
+    <tr>
+	<td>
+	    <b>Имя пользователя:</b>
+	</td>
+	<td>
+	    {{regform.username}}
+	</td>
+    </tr>
+    <tr>
+	<td>
+	    <b>Пароль:</b>
+	</td>
+	<td>
+	    {{regform.passw}}
+	</td>
+    </tr>
+    <tr>
+	<td>
+	    <b>Пароль еще раз:</b>
+	</td>
+	<td>
+	    {{regform.passw_again}}
+	</td>
+    </tr>
+    <tr>
+	<td>
+	    <b>Полное имя:</b>
+	</td>
+	<td>
+	    {{regform.fullname}}
+	</td>
+    </tr>
+    <tr>
+	<td>
+	    <b>E-mail адрес:</b>
+	</td>
+	<td>
+	    {{regform.email}}
+	</td>
+    </tr>
+    <tr>
+	<td>
+	    <b>Контактная информация:</b>
+	</td>
+	<td>
+	    {{regform.info}}
+	</td>
+    </tr>
+    <tr>
+	<td>
+	    &nbsp;
+	</td>
+	<td>
+	    <input type="submit" value="Зарегистрироваться">
+	</td>
+    </tr>
+</table>
 </form>
 </div>
 {%endblock %}
