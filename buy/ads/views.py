@@ -203,7 +203,7 @@ def ad_archive(request, num):
             ad.save()
             return HttpResponseRedirect('/')
         if u"no" in request.POST.keys():
-            return HttpResponseRedirect('/ads/%d' % ad.id)
+            return HttpResponseRedirect('/item/%d' % ad.id)
     return render_to_response('twobuttons.html', locals(),
         context_instance=RequestContext(request,
                                         processors=[common_processor]))

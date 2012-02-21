@@ -82,7 +82,7 @@
 	<font style='font-size:85%'><b>{% if p_num == 1 %}П{%else%}Не п{%endif%}оследние 25 объявлений:</b></font>
 	<hr size='1' noshade>
 	{% for ad in ads_list %}
-	  <div id='item'><a href='/ads/{{ad.id}}'>[{{ ad.category }}] {{ad.name}}</a> - {% ifequal user ad.user %}<b style='color:red'>{% else %}<b style='color:darkgreen'>{% endifequal %}{{ad.user}}</b> - <font style='font-size:75%'>{{ad.created|date:"j/n/Y H:i"}}</font><hr size='1'></div>
+	  <div id='item'><a href='/item/{{ad.id}}'>[{{ ad.category }}] {{ad.name}}</a> - {% ifequal user ad.user %}<b style='color:red'>{% else %}<b style='color:darkgreen'>{% endifequal %}{{ad.user}}</b> - <font style='font-size:75%'>{{ad.created|date:"j/n/Y H:i"}}</font><hr size='1'></div>
 	{% endfor %}
 
 {% block paging %}
