@@ -1,11 +1,17 @@
 {% extends "main.html" %}
 
+{% block title %}Барахолка Физтеха - {{ ad.name }}{% endblock %}
+
 {% block center %}
 <div align='center'>
     <font style='font-size:125%'><b>[{{ ad.category }}] {{ad.name}}</font></b><br>
     Сообщение было послано: {% ifequal user ad.user %}<b style='color:red'>{% else %}<b style='color:darkgreen'>{% endifequal %}{{ad.user}}</b> <a href="{% url postman_write ad.user %}">(Написать)</a><br>
-    Дата: {{ad.created|date:"l, F j G:i:s Y"}}<br>
+    Дата: {{ad.created|date:"l, F j G:i:s Y"}}<br>    
     {% ifequal user ad.user %}<a href="/edit/{{ ad.id }}">Редактировать</a><br><a href="/archive/{{ ad.id }}">Продано (убрать из списка объявлений)</a>{% endifequal %}
+        <div id="vk_like"></div>
+    <script type="text/javascript">
+        VK.Widgets.Like("vk_like", {type: "button"});
+    </script>
 </div>
     <br><br>
     {% if errors %}
