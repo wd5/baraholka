@@ -34,7 +34,7 @@ def main(request, p_num):
                 order_by('-created')[(p_num - 1) * 25: (p_num - 1) * 25 + 25]
     section = "adverts"
     #paging
-    adv_num = len(Advert.objects.filter(sell=True))
+    adv_num = len(Advert.objects.filter(sell=True, is_selled=False))
     pages_num = range(1, adv_num / 25 + (1 if adv_num % 25 == 0 else 2))
 
     to_return = render_to_response('main.html', locals(),
