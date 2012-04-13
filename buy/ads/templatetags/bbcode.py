@@ -5,15 +5,16 @@ from django.utils.safestring import mark_safe
 
 register = template.Library()
 
+
 @register.filter
 def bbcode(value):
     """
     Generates (X)HTML from string with BBCode "markup".
     By using the postmark lib from:
     @see: http://code.google.com/p/postmarkup/
-    
-    """ 
-    value = value.replace('[pic]','[img]').replace('[/pic]','[/img]')
+
+    """
+    value = value.replace('[pic]', '[img]').replace('[/pic]', '[/img]')
     try:
         from postmarkup import render_bbcode
     except ImportError:
@@ -24,14 +25,15 @@ def bbcode(value):
         return mark_safe(render_bbcode(value))
 bbcode.is_save = True
 
+
 @register.filter
 def strip_bbcode(value):
-    """ 
+    """
     Strips BBCode tags from a string
     By using the postmark lib from: 
     @see: http://code.google.com/p/postmarkup/
-    
-    """ 
+
+    """
     try:
         from postmarkup import strip_bbcode
     except ImportError:
