@@ -20,3 +20,6 @@ class LatestAdvertsFeed(Feed):
 
     def item_link(self, item):
         return '/item/%d' % item.id
+    
+    def item_pubdate(self, item):
+        return item.created
