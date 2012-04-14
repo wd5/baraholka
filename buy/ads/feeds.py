@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.syndication.views import Feed
 from buy.ads.models import Advert
+from buy.ads.templatetags import bbcode
 
 
 class LatestAdvertsFeed(Feed):
@@ -9,14 +10,16 @@ class LatestAdvertsFeed(Feed):
     description = "Последние объявления Барахолки Физтеха."
 
     def items(self):
-        return Advert.objects.filter(sell=True, is_selled=False).\
+        items = Advert.objects.filter(sell=True, is_selled=False).\
             order_by('-created')[:5]
+        items.reverse()
+        return items
 
     def item_title(self, item):
         return item.name
 
     def item_description(self, item):
-        return item.text
+        return bbcode.strip_bbcode(item.text)
 
     def item_link(self, item):
         return '/item/%d' % item.id
