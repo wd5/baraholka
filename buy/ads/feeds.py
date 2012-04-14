@@ -10,8 +10,10 @@ class LatestAdvertsFeed(Feed):
     description = "Последние объявления Барахолки Физтеха."
 
     def items(self):
-        return Advert.objects.filter(sell=True, is_selled=False).\
-            order_by('-created')[:5].reverse()
+        items = [x for x in Advert.objects.filter(sell=True, is_selled=False).\
+            order_by('-created')[:5]]
+        items.reverse()
+        return items
 
     def item_title(self, item):
         return item.name
