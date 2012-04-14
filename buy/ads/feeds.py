@@ -11,7 +11,7 @@ class LatestAdvertsFeed(Feed):
 
     def items(self):
         return Advert.objects.filter(sell=True, is_selled=False).\
-            order_by('created')[-5:]
+            order_by('-created')[:5].reverse()
 
     def item_title(self, item):
         return item.name
