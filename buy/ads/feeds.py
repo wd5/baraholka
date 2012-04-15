@@ -4,16 +4,14 @@ from buy.ads.models import Advert
 from buy.ads.templatetags import bbcode
 
 
-class LatestAdvertsFeed(Feed):
+class BaseFeed(Feed):
     title = "Барахолка Физтеха"
     link = "/feed/"
     description = "Последние объявления Барахолки Физтеха."
 
     def items(self):
-        items = [x for x in Advert.objects.filter(sell=True, is_selled=False).\
-            order_by('-created')[:5]]
-        items.reverse()
-        return items
+        return Advert.objects.filter(sell=True, is_selled=False).\
+            order_by('-created')[:5]
 
     def item_title(self, item):
         return item.name
@@ -26,3 +24,9 @@ class LatestAdvertsFeed(Feed):
     
     def item_pubdate(self, item):
         return item.created
+
+
+class VkontakteFeed(BaseFeed):
+    def items(self):
+        return Advert.objects.filter(sell=True, is_selled=False).\
+            order_by('-created')[:3]
