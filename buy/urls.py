@@ -6,7 +6,7 @@ from buy.ads.views import ad_show, main, news_all_show, news_show, cat_list,\
 from django.contrib.auth.views import login, logout
 from django.views.generic.simple import redirect_to
 from postman import urls as postman_urls
-from buy.ads.feeds import LatestAdvertsFeed
+from buy.ads.feeds import BaseFeed, VkontakteFeed
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -15,7 +15,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
-    (r'^feed/', LatestAdvertsFeed()),
+    (r'^feed/', BaseFeed()),
+    (r'^feed_vkontakte/', VkontakteFeed()),
     (r'^login/$', login),
     (r'^logout/$', logout),
     (r'^item/(?P<num>\d+)/$', ad_show),
