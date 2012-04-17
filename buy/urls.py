@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+from subprocess import check_output
+hostname = check_output('hostname').strip()
+
+if hostname == 'Rocker':
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 from django.conf.urls.defaults import patterns, include
 from buy.ads.views import ad_show, main, news_all_show, news_show, cat_list,\
                           ad_add, cabinet, my_ads_list, reg, ad_edit,\
@@ -38,3 +44,6 @@ urlpatterns = patterns('',
     #(r'^search/$', search),
     (r'^search/', include('haystack.urls')),
 )
+
+if hostname == 'Rocker':
+    urlpatterns += staticfiles_urlpatterns()

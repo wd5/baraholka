@@ -1,7 +1,16 @@
 # -*- coding: utf-8 -*-
 # Django settings for buy project.
+from subprocess import check_output
+hostname = check_output('hostname').strip()
+is_development = (hostname == 'Rocker')
 
-DEBUG = False
+if is_development:
+    from django.conf.global_settings import STATIC_URL
+
+if is_development:
+    DEBUG = True
+else:
+    DEBUG = False
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -10,15 +19,21 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DEFAULT_FROM_EMAIL = "noreply@buy.fizteh.ru"
+dev_db = {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'buydb',
+    'USER': 'buy',
+    'PASSWORD': 'baraholka'
+}
+release_db = {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'shop',
+    'USER': 'vkorchagin',
+    'PASSWORD': 'rSmjQL8YJbCTczaL'
+}
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'shop',
-        'USER': 'vkorchagin',
-        'PASSWORD': 'rSmjQL8YJbCTczaL'
-    }
+    'default': dev_db if is_development else release_db
 }
 
 CACHES = {
@@ -65,9 +80,8 @@ SECRET_KEY = 't^*#g9u+!u1rv)9jejr+wwzy)s$fs^@uila&q8v_0_9)#10hsi'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
-#     'django.template.loaders.eggs.load_template_source',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader'
 )
 
 AUTH_PROFILE_MODULE = 'ads.UserProfile'
@@ -107,9 +121,10 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'urls'
 FORCE_SCRIPT_NAME = ''
 
-TEMPLATE_DIRS = (
-    '/vint/data/host/42b.ru/shop/buy/templates',
-)
+dev_template_dirs = ('/home/rocker/djcode/baraholka/buy/templates',)
+release_template_dirs = ('/vint/data/host/42b.ru/shop/buy/templates',)
+
+TEMPLATE_DIRS = dev_template_dirs if is_development else release_template_dirs
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -123,3 +138,7 @@ INSTALLED_APPS = (
     'postman',
     'haystack',
 )
+
+if is_development:
+    STATICFILES_DIRS = ("/home/rocker/djcode/baraholka/buy/static/",)
+    STATIC_URL = "/static/"
