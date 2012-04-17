@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render_to_response
-from django.http import HttpResponseRedirect
-from buy.ads.models import Advert, Category, Comment, News, NewsComment,\
-                           PrivateMessage, User, UserProfile
-from buy.ads.forms import AddForm, CommentForm, RegForm, SimpleSearchForm,\
-                          PassChangeForm
+from buy.ads.forms import AddForm, CommentForm, RegForm, SimpleSearchForm, \
+    PassChangeForm
+from buy.ads.models import Advert, Category, Comment, News, NewsComment, \
+    PrivateMessage, User, UserProfile
+from django.conf import settings
 from django.contrib.auth import authenticate, login
-
-from django.views.decorators.csrf import csrf_protect
-from django.template import RequestContext
-
 from django.core.cache import cache
-from django.http import Http404
-
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from django.template.response import SimpleTemplateResponse
+from django.views.decorators.csrf import csrf_protect
+import os
 
 def common_processor(request):
     return {'form': SimpleSearchForm(), 'user': request.user,
