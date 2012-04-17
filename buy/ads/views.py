@@ -216,6 +216,7 @@ def ad_archive(request, num):
         if u"yes" in request.POST.keys():
             ad.is_selled = True
             ad.save()
+            regenerate_widget()
             return HttpResponseRedirect('/')
         if u"no" in request.POST.keys():
             return HttpResponseRedirect('/item/%d' % ad.id)
