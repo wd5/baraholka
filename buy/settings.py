@@ -140,7 +140,10 @@ INSTALLED_APPS = (
     'haystack',
 )
 
-STATICFILES_DIRS = ("/home/rocker/djcode/baraholka/buy/static/",)
+
+static_release = ('/vint/data/host/42b.ru/shop/buy/static',)
+static_dev = ("/home/rocker/djcode/baraholka/buy/static/",)
+STATICFILES_DIRS = static_dev if is_development else static_release
 
 if is_development:
     STATIC_URL = "/static/"
