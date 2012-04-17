@@ -5,6 +5,7 @@ from buy.ads.models import Advert, Category, Comment, News, NewsComment, \
     PrivateMessage, User, UserProfile
 from django.conf import settings
 from django.contrib.auth import authenticate, login
+from django.contrib.sites.models import Site
 from django.core.cache import cache
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -20,6 +21,20 @@ def common_processor(request):
             'buy_ads': Advert.objects.filter(sell=False).\
                            order_by('-created')[0:5]}
 
+
+def regenerate_widget():
+    ads = Advert.objects.filter(sell=True, is_selled=False).\
+        order_by('-created')[:5]
+    current_site = Site.objects.get_current()
+    response = SimpleTemplateResponse('widget.html', 
+                                      {'ads' : ads, 
+                                       'domain' : current_site.domain})
+    response.render()
+    widget_file = open(os.path.join(settings.STATICFILES_DIRS[0],
+                                    'widget.html'), 'w')
+    content = response.rendered_content.encode('utf-8')
+    widget_file.write(content)
+    widget_file.close()
 
 @csrf_protect
 def main(request, p_num):
@@ -139,6 +154,7 @@ def ad_add(request):
                         price=cd['price'], place=cd['place'], sell=True)
             if u"post" in request.POST.keys():
                 ad.save()
+                regenerate_widget()
                 cache.delete('all_ads')
                 cache.delete('main')
                 return HttpResponseRedirect('/')
