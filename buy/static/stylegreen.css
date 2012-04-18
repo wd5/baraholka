@@ -8,6 +8,10 @@ body {
    font-size: 100%;
    background: white repeat-x; }
 
+div.pm_body {
+   background-color: #EDEDED;
+   border: 1px solid #777;
+}
 
 /******** Content variations ********/
 #head { 
