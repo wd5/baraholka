@@ -12,6 +12,8 @@ if is_development:
 else:
     DEBUG = False
 
+DEFAULT_FROM_EMAIL = "noreply@buy.fizteh.ru"
+
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
     ('Vasiliy Korchagin', 'vasiliy.korchagin@gmail.com'),
