@@ -233,7 +233,7 @@ def _view(request, filter, form_class=QuickReplyForm, formatters=(format_subject
             'pm_messages': msgs,
             'archived': archived,
             'reply_to_pk': received.pk if received else None,
-            'form' : form_class(initial=received.quote(*formatters)) if received else None,
+            'form' : form_class() if received else None,
             'next_url': request.GET.get('next', reverse('postman_inbox')),
             }, context_instance=RequestContext(request))
     raise Http404
