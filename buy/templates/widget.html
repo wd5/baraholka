@@ -13,7 +13,7 @@ A:hover {text-decoration: underline}
 
 {% load mytags %}
 {% for ad in ads %}
-  <a style="color:white;font-size:13px;text-decoration:underline" href="http://{{domain}}/item/{{ad.id}}" target="_top">{{ad.name|cutlen:20}}</a> <font style="color:#B8C8DB;font-size:10px">{{ad.created|date:"d/m"}}</font><br>
+  <a style="color:white;font-size:13px;text-decoration:underline" href="http://{{domain}}/item/{{ad.id}}" target="_top">{{ad.name|cutlen:20}}{%if ad.name|length > 20 %}...{% endif %}</a> <font style="color:#B8C8DB;font-size:10px">{{ad.created|date:"d/m"}}</font><br>
 {% endfor %}
 </body>
 </html>
