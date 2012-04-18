@@ -13,6 +13,10 @@ div.pm_body {
    border: 1px solid #777;
 }
 
+div.pm_message {
+   margin: 0 0 20px;
+}
+
 /******** Content variations ********/
 #head { 
    background-color: #444; }
