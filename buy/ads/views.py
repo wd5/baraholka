@@ -124,7 +124,7 @@ def news_show(request, num):
 
 def cat_list(request, num, p_num):
     p_num = int(p_num)
-    ads_list = Advert.objects.filter(sell=True, category=num).\
+    ads_list = Advert.objects.filter(sell=True, category=num, is_selled=False).\
         order_by('-created')[(p_num - 1) * 25: (p_num - 1) * 25 + 25]
     #paging
     adv_num = len(Advert.objects.filter(sell=True, category=num))
