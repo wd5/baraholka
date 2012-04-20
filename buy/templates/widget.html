@@ -13,7 +13,8 @@ A:hover {text-decoration: underline}
 
 {% load mytags %}
 {% for ad in ads %}
-  <font style="color:white;font-size:12px">{{ad.created|date:"d/m"}}</font> <a style="color:#B8C8DB;font-size:12px;font-family: Arial, 'Helvetica sans-serif'" href="http://{{domain}}/item/{{ad.id}}" target="_top">{{ad.name|cutlen:20}}{%if ad.name|length > 20 %}...{% endif %}</a><br>
+  <font style="color:white;font-size:12px">{{ad.created|date:"d/m"}}</font> 
+  <a style="color:#B8C8DB;font-size:12px;font-family: Arial, 'Helvetica sans-serif'" href="http://{{domain}}/item/{{ad.id}}" alt="{{ad.name}}" target="_top">{{ad.name|cutlen:20}}{%if ad.name|length > 20 %}...{% endif %}</a><br>
 {% endfor %}
 </body>
 </html>
