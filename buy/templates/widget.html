@@ -9,11 +9,11 @@ A:hover {text-decoration: underline}
 </style>
 </head>
 <body>
-<a style="color:#A9B7C9;font-weight:bold;line-height:30px" href="http://{{domain}}" target="_top">Барахолка Физтеха</a><br>
+<a style="color:white;font-weight:bold;font-size:14px;font-family: Arial, 'Helvetica sans-serif'" href="http://{{domain}}" target="_top">Барахолка Физтеха</a><br>
 
 {% load mytags %}
 {% for ad in ads %}
-  <a style="color:white;font-size:13px;text-decoration:underline" href="http://{{domain}}/item/{{ad.id}}" target="_top">{{ad.name|cutlen:20}}{%if ad.name|length > 20 %}...{% endif %}</a> <font style="color:#B8C8DB;font-size:10px">{{ad.created|date:"d/m"}}</font><br>
+  <font style="color:white;font-size:12px">{{ad.created|date:"d/m"}}</font> <a style="color:#B8C8DB;font-size:12px;font-family: Arial, 'Helvetica sans-serif'" href="http://{{domain}}/item/{{ad.id}}" target="_top">{{ad.name|cutlen:20}}{%if ad.name|length > 20 %}...{% endif %}</a><br>
 {% endfor %}
 </body>
 </html>
