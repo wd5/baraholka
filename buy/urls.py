@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 from subprocess import check_output
 hostname = check_output('hostname').strip()
+is_development = (hostname == 'Rocker' or hostname == 'rck-thinkpad')
 
-if hostname == 'Rocker':
+if is_development:
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from django.conf.urls.defaults import patterns, include
 from buy.ads.views import ad_show, main, news_all_show, news_show, cat_list,\
-                          ad_add, cabinet, my_ads_list, reg, ad_edit,\
-                          ad_archive
+                          ad_add, ad_edit, ad_archive, cabinet, my_ads_list,\
+                          reg
 from django.contrib.auth.views import login, logout
-from django.views.generic.simple import redirect_to
 from postman import urls as postman_urls
 from buy.ads.feeds import BaseFeed, VkontakteFeed
+from django.views.generic.simple import redirect_to
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -45,5 +46,5 @@ urlpatterns = patterns('',
     (r'^search/', include('haystack.urls')),
 )
 
-if hostname == 'Rocker':
+if is_development:
     urlpatterns += staticfiles_urlpatterns()

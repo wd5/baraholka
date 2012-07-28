@@ -2,7 +2,7 @@
 # Django settings for buy project.
 from subprocess import check_output
 hostname = check_output('hostname').strip()
-is_development = (hostname == 'Rocker')
+is_development = (hostname == 'Rocker' or hostname == 'rck-thinkpad')
 
 if is_development:
     from django.conf.global_settings import STATIC_URL
@@ -22,10 +22,10 @@ ADMINS = (
 MANAGERS = ADMINS
 
 dev_db = {
-    'ENGINE': 'django.db.backends.mysql',
+    'ENGINE': 'django.db.backends.sqlite3',
     'NAME': 'buydb',
-    'USER': 'buy',
-    'PASSWORD': 'baraholka'
+    #'USER': 'buy',
+    #'PASSWORD': 'baraholka'
 }
 release_db = {
     'ENGINE': 'django.db.backends.mysql',
@@ -124,7 +124,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'urls'
 FORCE_SCRIPT_NAME = ''
 
-dev_template_dirs = ('/home/rocker/djcode/baraholka/buy/templates',)
+dev_template_dirs = ('/home/rck/development/baraholka/buy/templates',)
 release_template_dirs = ('/vint/data/host/42b.ru/shop/buy/templates',)
 
 TEMPLATE_DIRS = dev_template_dirs if is_development else release_template_dirs
@@ -142,9 +142,8 @@ INSTALLED_APPS = (
     'haystack',
 )
 
-
 static_release = ('/vint/data/host/42b.ru/shop/buy/static',)
-static_dev = ("/home/rocker/djcode/baraholka/buy/static/",)
+static_dev = ("/home/rck/development/baraholka/buy/static/",)
 STATICFILES_DIRS = static_dev if is_development else static_release
 
 if is_development:
