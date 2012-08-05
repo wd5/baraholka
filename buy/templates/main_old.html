@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
+<head>
+
+<title>{% block title %}Барахолка Физтеха{% endblock %}</title>
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="/static/stylegreen.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-28955683-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript" src="http://userapi.com/js/api/openapi.js?48"></script>
+<script type="text/javascript">
+  VK.init({apiId: 2817356, onlyWidgets: true});
+</script>
+{% block extrahead %}{% endblock %}
+</head>
+
+<body>
+<div id="outerwrapper">
+
+<div id="head">
+	<div id="topbar">
+		<div style="float: left; padding-right: 10px;">
+			<a href="/"><img style="padding: 0" src="/static/img/logo_black.jpg" alt="Барахолка Физтеха"></a>
+		</div>
+		<div style="float: left; padding-top: 10px;">
+			<font size="20pt"><a href='/'>Барахолка</a></font><br><br>
+			<p><strong><font size="5pt">Здесь вы можете купить или продать что-нибудь на Физтехе!</font></strong></p>
+		</div>
+		<div id="pagetop">
+			<div id="topnav">
+               <ul>{% if user.is_authenticated %}
+                      <li><h3>Привет, <b style='color:red'>{{ user.username }}</b>!</h3></li>
+                      <li><h3><a href="/logout" rel="nofollow">Выйти</a>  </h3></li>
+                    {% else %}  
+		      <li><h3><a href="/login" rel="nofollow">Войти</a></h3></li>
+      		      <li><h3><a href="/reg" rel="nofollow">Зарегистрироваться</a></h3></li>
+                    {% endif %}
+               </ul>
+			</div><!-- end of topnav -->
+		</div><!-- end of pagetop -->
+	</div><!-- end of topbar -->
+   <div id="navigation">
+      <div id="navbar_link">
+        <ul>
+           <li {% ifequal section 'adverts' %} class="currentpage" {% endifequal %}><a href='/'>Объявления</a></li>
+           <li {% ifequal section 'new' %} class="currentpage" {% endifequal %}><a href="/add">Новое объявление</a></li>
+           <li {% ifequal section 'cabinet' %} class="currentpage" {% endifequal %}><a href="/cabinet">Личный кабинет{% if postman_unread_count%}(новых сообщений: {{postman_unread_count}}){% endif %}</a></li>
+           <li {% ifequal section 'search' %} class="currentpage" {% endifequal %}><a href="/search">Поиск</a></li>
+        </ul>
+      </div><!-- end of navbar_link -->
+      <div id="sitesearch">
+	      <form method="get" id="searchform" action="/search/">
+<input type="text" id="searchfield" name="q" onclick="this.value='';" onfocus="this.select()" onblur="this.value=!this.value?'Поиск...':this.value;" value="Поиск..." />
+          <input type="hidden" value="Search" />
+          </form>
+      </div><!-- end of sitesearch -->
+    </div><!-- end of navigation -->
+  </div><!-- end of head -->
+
+
+  <div id="innerwrapper">
+{% block content %}
+     <div id="contentmid">
+ {% block center %}
+<!--      <form action="/search" method="post">
+      {{form.category}}{{form.text}}
+      <input type="submit" value="Найти">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a  href='/advsearch'>расширенный поиск</a>
+      </form>-->
+	<font style='font-size:85%'><b>{% if p_num == 1 %}П{%else%}Не п{%endif%}оследние 25 объявлений:</b></font>
+	<hr size='1' noshade>
+	{% for ad in ads_list %}
+	  <div id='item'><a href='/item/{{ad.id}}'>[{{ ad.category }}] {{ad.name}}</a> - {% ifequal user ad.user %}<b style='color:red'>{% else %}<b style='color:darkgreen'>{% endifequal %}{{ad.user}}</b> - <font style='font-size:75%'>{{ad.created|date:"j/n/Y H:i"}}</font><hr size='1'></div>
+	{% endfor %}
+
+{% block paging %}
+<div align=center>
+  {% for page_num in pages_num %}
+    <a href="{% if num %}/cat/{{num}}{%endif%}/page/{{page_num}}">{{page_num}}</a> {% if not forloop.last %}|{% endif %}
+  {% endfor %}
+</div>
+{% endblock %}
+{% endblock %}
+     </div><!-- end of content -->	     
+     <div id="leftsidebar">
+     {% block leftsidebar %}
+	<b>Категории:</b>
+	<div class="SidebarItem"><a href='/'>Все</a></div>
+	{% for category in category_list %}
+	    <div class="SidebarItem"><a href='/cat/{{category.id}}'>{{category.name}}</a></div>
+	{% endfor %}
+		<hr>
+	<b>Последние новости:</b>
+        <ul style='list-style-type: none;padding: 5px;margin: 0px'>
+        <font style='font-size:100%'>
+        {% for news in news_list %}
+        <li>{{news.name}} <a href="/news/{{news.id}}">(подробнее)</a></li>
+        {% endfor %}
+        </ul>
+        <div style='font-size:75%;text-align:right;'><a href='/news'>все</a></div>
+        <hr size='1' noshade>
+     {% endblock %}
+     </div><!-- end of sidebar -->
+{% endblock %}
+  </div><!-- end innerwrapper -->  
+
+<div id="footer">
+	<p><span style="float: left;">&#169; 2012 Барахолка</span><span style="float: right;">Сделал <a href="http://board.rt.mipt.ru/index-tmp.cgi?uinfo=Rocker" title="Rocker">Rocker</a>, помогал <a href="http://board.rt.mipt.ru/index-tmp.cgi?uinfo=Spasitel" title="Spasitel">Spasitel</a></span>
+    </p>
+</div><!-- end of footer -->
+</div><!-- end of outerwrapper -->
+</body>
+</html>

@@ -1,9 +1,9 @@
 {% extends "main.html" %}
 
 {% block content %}
-    <center>
+    <div class="hero-unit">
 	{% block message %}
 	   <h2>{% autoescape off %}{{msg}}{% endautoescape %} </h2>
 	{% endblock %}
-    </center>
+    </div>
 {%endblock %}

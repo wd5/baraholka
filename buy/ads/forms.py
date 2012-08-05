@@ -30,7 +30,7 @@ class AddForm(forms.Form):
         if len(name.strip()) == 0:
             self._errors['name'] = ErrorList([u"Тема не может быть пустой!"])
         return name.strip()
-    text = forms.CharField(widget=forms.Textarea(), label="Описание",
+    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'span6'}), label="Описание",
                            required=False)
     category = forms.ChoiceField(label="Категория")
     price = forms.CharField(label="Цена", required=False, max_length=32)
@@ -40,7 +40,7 @@ class AddForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(AddForm, self).__init__(*args, **kwargs)
         cat_list = [(cat.id, cat.name) for cat in
-                    Category.objects.all().order_by('name')]
+                    Category.objects.all().order_by('id')]
         self.fields['category'].choices = cat_list
 
 
