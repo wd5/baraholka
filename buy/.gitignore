@@ -1,1 +1,4 @@
+# Python temporary files
 *.pyc
+# Widget for miptstream
+static/widget.html
