@@ -2,34 +2,36 @@
 {% load i18n %}{% load postman_tags %}
 {% block title %}{% trans "Messaging" %}{% endblock %}
 {% block content %}
-<table width="100%">
-    <tr>
-      <td>
-        <a href="/cabinet">Профиль</a>
-      </td>
-      <td>
-    <a href="/cabinet/item">Мои объявы</a>
-      </td>
-      <td>
-        <a href="/cabinet/msg">Личные сообщения{% if postman_unread_count%}({{postman_unread_count}}){% endif %}</a>
-      </td>
-    </tr>
-    <tr>
-      <td width=250px>
-{% block postman_menu %}
-<ul id="postman_menu">{% postman_unread as unread_count %}
- <li><a href="{% url postman_inbox %} ">&raquo;&nbsp;{% trans "Inbox" %}{% if unread_count %} <strong>({{ unread_count }})</strong>{% endif %}</a></li>
- <li><a href="{% url postman_sent %} ">&raquo;&nbsp;{% trans "Sent Messages" %}</a></li>
- <li><a href="{% url postman_write %} ">&raquo;&nbsp;{% trans "Write" %}</a></li>
- <li><a href="{% url postman_archives %} ">&raquo;&nbsp;{% trans "Archives" %}</a></li>
- <li><a href="{% url postman_trash %} ">&raquo;&nbsp;{% trans "Trash" %}</a></li>
-</ul>
-{% endblock %}
-      </td>
-      <td  colspan="2">
-        {% block info %}
-        {% endblock %}
-      </td>
-    </tr>
-</table>
-{%endblock %}
+  <ul class="nav nav-tabs">
+    <li>
+      <a href="/cabinet"><i class="icon-user"></i> Профиль</a>
+    </li>
+    <li>
+      <a href="/cabinet/item"><i class="icon-th-list"></i> Мои объявы</a>
+    </li>
+    <li class="active">
+      <a href="/cabinet/msg"><i class="icon-envelope"></i> Личные сообщения{% if postman_unread_count%}<span class="badge badge-warning">{{postman_unread_count}}</span>{% endif %}</a>
+    </li>
+  </ul>
+
+  <div class="span2 well" style="padding: 8px 0;">
+    {% block postman_menu %}
+      <ul id="postman_menu" class="nav nav-list">{% postman_unread as unread_count %}
+        <li {% ifequal section "inbox" %} class="active" {% endifequal %}>
+          <a href="{% url postman_inbox %} ">
+            <i class="sprite-glyphicons_122_message_in"></i> {% trans "Inbox" %}{% if unread_count %} <span class="badge badge-warning">{{ unread_count }}</span>{% endif %}
+          </a>
+        </li>
+        <li {% ifequal section "sent" %} class="active" {% endifequal %}><a href="{% url postman_sent %} "><i class="sprite-glyphicons_123_message_out"></i> {% trans "Sent Messages" %}</a></li>
+        <li {% ifequal section "write" %} class="active" {% endifequal %}><a href="{% url postman_write %} "><i class="sprite-glyphicons_151_edit"></i> {% trans "Write" %}</a></li>
+        <li {% ifequal section "archives" %} class="active" {% endifequal %}><a href="{% url postman_archives %} "><i class="sprite-glyphicons_059_cargo"></i> {% trans "Archives" %}</a></li>
+        <li {% ifequal section "trash" %} class="active" {% endifequal %}><a href="{% url postman_trash %} "><i class="sprite-glyphicons_016_bin"></i> {% trans "Trash" %}</a></li>
+      </ul>
+    {% endblock %}
+  </div>
+      
+  <div class="span9 well">
+    {% block info %}
+    {% endblock %}
+  </div>
+{% endblock %} <!-- enblock content -->

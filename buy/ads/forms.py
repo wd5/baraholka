@@ -18,7 +18,10 @@ class SimpleSearchForm(forms.Form):
 
 
 class CommentForm(forms.Form):
-    text = forms.CharField(widget=forms.Textarea, label='Комменть сюда')
+    text = forms.CharField(
+                widget=forms.Textarea(attrs={'rows': 3, 
+                                             'class': 'input-xlarge'}),
+                label='Комменть сюда')
 
 
 class AddForm(forms.Form):
@@ -30,8 +33,9 @@ class AddForm(forms.Form):
         if len(name.strip()) == 0:
             self._errors['name'] = ErrorList([u"Тема не может быть пустой!"])
         return name.strip()
-    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'span6'}), label="Описание",
-                           required=False)
+    text = forms.CharField(
+                widget=forms.Textarea(attrs={'class': 'input-xlarge'}),
+                label="Описание", required=False)
     category = forms.ChoiceField(label="Категория")
     price = forms.CharField(label="Цена", required=False, max_length=32)
     place = forms.CharField(label="Место", required=False, max_length=128)

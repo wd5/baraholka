@@ -245,7 +245,7 @@ def cabinet(request):
                 errors.append('Вы ввели неверный пароль')
     else:
         passform = PassChangeForm()
-    section = 'cabinet'
+    section = 'profile'
     return render_to_response('cabinet.html', locals(),
         context_instance=RequestContext(request,
                                         processors=[common_processor]))
@@ -259,7 +259,7 @@ def my_ads_list(request):
         return render_to_response('msg.html', locals())
 
     ads_list = Advert.objects.filter(sell=True, user=user).order_by('-created')
-    section = 'cabinet'
+    section = 'my_ads'
     return render_to_response('my_ads_list.html', locals(),
         context_instance=RequestContext(request,
                                         processors=[common_processor]))

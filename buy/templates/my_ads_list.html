@@ -1,8 +1,26 @@
 {% extends "cabinet.html" %}
 
 {% block info%}
-	<hr size='1' noshade>
-	{% for ad in ads_list %}
-	  <div id='item'><a href='/item/{{ad.id}}'>[{{ ad.category }}] {{ad.name}}</a> - {% ifequal user ad.user %}<b style='color:red'>{% else %}<b style='color:darkgreen'>{% endifequal %}{{ad.user}}</b> - <font style='font-size:75%'>{{ad.created|date:"j/n/Y H:i"}}</font><hr size='1'></div>
-	{% endfor %}
+  <ul class="nav nav-list" style="padding: 0;">
+    <li class="nav-header">{% if p_num == 1 %}П{%else%}Не п{%endif%}оследние {{ads_list|length}} объявлений</li>
+    <li class="divider"></li>
+    {% for ad in ads_list %}
+      <li>
+        <a href='/item/{{ad.id}}'>
+          [{{ ad.category }}] {{ad.name}} - 
+          {% ifequal user ad.user %}
+            <b style='color:red'>
+          {% else %}
+            <b style='color:darkgreen'>
+          {% endifequal %}{{ad.user}}</b>
+          {% if ad.comment_set.all %}
+          <span class="badge comment_count" rel="tooltip" data-original-title="количество комментариев">
+            <i class="icon-comment"></i> {{ad.comment_set.all|length}}
+          </span>
+          {% endif %}
+           - <font style='font-size:75%'>{{ad.created|date:"j/n/Y H:i"}}</font>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
 {% endblock %}

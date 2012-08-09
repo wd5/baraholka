@@ -1,40 +1,37 @@
 {% extends "main.html" %}
 
 {% block content %}
-<table width="100%">
-    <tr>
-      <td>
-        <a href="/cabinet">Профиль</a>
-      </td>
-      <td>
-	<a href="/cabinet/item">Мои объявы</a>
-      </td>
-      <td>
-        <a href="/cabinet/msg">Личные сообщения{% if postman_unread_count%}({{postman_unread_count}}){% endif %}</a>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="3">
-{% block postman_menu %}{% endblock %}
-        {% block info %}
-        Имя: {{user.get_profile.fullname}}<br>
-        e-mail: {{user.email}}<br>
-	Контакты: {{user.get_profile.info}}<br>
+  <ul class="nav nav-tabs">
+    <li {% ifequal section "profile" %} class="active" {% endifequal %}>
+      <a href="/cabinet"><i class="icon-user"></i> Профиль</a>
+    </li>
+    <li {% ifequal section "my_ads" %} class="active" {% endifequal %}>
+	  <a href="/cabinet/item"><i class="icon-th-list"></i> Мои объявы</a>
+    </li>
+    <li>
+      <a href="/cabinet/msg"><i class="icon-envelope"></i> Личные сообщения{% if postman_unread_count%}<span class="badge badge-warning">{{postman_unread_count}}</span>{% endif %}</a>
+    </li>
+  </ul>
+      
+  <div class="span12 well">
+    {% block info %}
+      <p>Имя: {{user.get_profile.fullname}}</p>
+      <p>e-mail: {{user.email}}</p>
+	  <p>Контакты: {{user.get_profile.info}}</p>
 	
-	{% if errors %}
-	    {% for error in errors %}
-	    {{error}}<br>
-	    {% endfor %}
-	{% endif %}
-	
-	<form action="." method="POST">{% csrf_token %}
-	<ul>
-	{{passform.as_ul}}
+      {% if errors %}
+        {% for error in errors %}
+          <p>{{error}}</p>
+        {% endfor %}
+      {% endif %}
+
+	  <form action="." method="POST">{% csrf_token %}
+        <ul>
+          {{passform.as_ul}}
         </ul>
-	<input type="submit" value="Изменить пароль">
-	</form>
-        {% endblock %}
-      </td>
-    </tr>
-</table>
-{%endblock %}
+        <input class="btn" type="submit" value="Изменить пароль">
+	  </form>
+    {% endblock %}
+  </div>
+
+{%endblock %} <!-- content -->

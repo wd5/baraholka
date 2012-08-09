@@ -27,6 +27,22 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/static/ico/apple-touch-icon-57-precomposed.png">
+    
+    <script type="text/javascript">
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-28955683-1']);
+	  _gaq.push(['_trackPageview']);
+	
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();	
+	</script>
+	<script type="text/javascript" src="http://userapi.com/js/api/openapi.js?48"></script>
+	<script type="text/javascript">
+	  VK.init({apiId: 2817356, onlyWidgets: true});
+	</script>
     {% block extrahead %}{% endblock %}
   </head>
 
@@ -57,14 +73,14 @@
           <ul class="nav pull-right">
             {% if user.is_authenticated %}
               <div class="btn-group">
-                <a class="btn btn-danger dropdown-toggle" data-toggle="dropdown" href="#">
-                  <i class="icon-user icon-white"></i> {{user.username}}
+                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                  <i class="icon-user icon-white"></i> {{user.username}}{% if postman_unread_count%} <span class="badge badge-warning">{{postman_unread_count}}</span>{% endif %}
                   <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- dropdown menu links -->
                   <li><a href="/cabinet"><i class="icon-wrench"></i> Настройки</a></li>
-                  <li><a href="/cabinet/msg"><i class="icon-envelope"></i> Сообщения</a></li>
+                  <li><a href="/cabinet/msg"><i class="icon-envelope"></i> Сообщения{% if postman_unread_count%} <span class="badge badge-warning">{{postman_unread_count}}</span>{% endif %}</a></li>
                   <li class="divider"></li>
                   <li><a href="/logout"><i class="icon-off"></i> Выйти</a></li>
                 </ul>
@@ -80,15 +96,22 @@
 
 	{% if messages %}
 	  {% for message in messages %}
-	    <div class="alert alert-info">
+	    <div class="alert alert-info" align="center">
 	      <a class="close" data-dismiss="alert" href="#">×</a>
 	      {{ message }}
 	    </div>
 	  {% endfor %}
 	{% endif %}
+	
+	{% if postman_unread_count%}
+	  <div class="alert alert-warning" align="center">
+	    <a class="close" data-dismiss="alert" href="#">×</a>
+	    У вас есть непрочитанные личные сообщения. <a href="/cabinet/msg">Прочитать.</a>
+	  </div>
+	{% endif %}
 
     <div class="container">
-      <div class="row">
+      <div class="row-fluid">
       {% block content %}
         <div class="span3"> <!-- categories -->
         {% block leftsidebar %}
@@ -123,28 +146,41 @@
         {% endblock %}
         </div> <!-- /categories -->
         <div class="span9"> <!-- adverts -->
-        <div class="well" style="padding: 8px 0;">        
+        <div class="well">        
         {% block center %}
-          <ul class="nav nav-list">
+          <ul class="nav nav-list" style="padding: 0;">
             <li class="nav-header">{% if p_num == 1 %}П{%else%}Не п{%endif%}оследние {{ads_list|length}} объявлений</li>
             <li class="divider"></li>
-  	         {% for ad in ads_list %}
-  	           <li>
-  	             <a href='/item/{{ad.id}}'>[{{ ad.category }}] {{ad.name}} - {% ifequal user ad.user %}<b style='color:red'>{% else %}<b style='color:darkgreen'>{% endifequal %}{{ad.user}}</b> - <font style='font-size:75%'>{{ad.created|date:"j/n/Y H:i"}}</font></a>
-  	           </li>
-  	         {% endfor %}
-	         </ul>
-	         {% block paging %}
-	           <div class="pagination span3 offset3">
-              <ul>
-                {% for page_num in pages_num %}
-                  <li {% ifequal p_num page_num %}class="active"{% endifequal %}><a href="{% if num %}/cat/{{num}}{%endif%}/page/{{page_num}}">{{page_num}}</a></li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% endblock %}
+  	        {% for ad in ads_list %}
+  	          <li>
+  	            <a href='/item/{{ad.id}}'>
+  	              [{{ ad.category }}] {{ad.name}} - 
+  	              {% ifequal user ad.user %}
+  	                <b style='color:red'>
+  	              {% else %}
+  	                <b style='color:darkgreen'>
+  	              {% endifequal %}{{ad.user}}</b>
+  	              {% if ad.comment_set.all %}
+  	              <span class="badge comment_count" rel="tooltip" data-original-title="количество комментариев">
+  	                <i class="icon-comment"></i> {{ad.comment_set.all|length}}
+  	              </span>
+  	              {% endif %}
+  	               - <font style='font-size:75%'>{{ad.created|date:"j/n/Y H:i"}}</font>
+  	            </a>
+  	          </li>
+  	        {% endfor %}
+	      </ul>
         {% endblock %}
-        </div>     
+        </div> 
+        {% block paging %}
+          <div class="pagination" align="center">
+            <ul>
+              {% for page_num in pages_num %}
+                <li {% ifequal p_num page_num %}class="active"{% endifequal %}><a href="{% if num %}/cat/{{num}}{%endif%}/page/{{page_num}}">{{page_num}}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endblock %}    
         </div> <!-- /adverts -->
       {% endblock %}
       </div>
@@ -166,6 +202,12 @@
     <script src="/static/js/bootstrap-collapse.js"></script>
     <script src="/static/js/bootstrap-carousel.js"></script>
     <script src="/static/js/bootstrap-typeahead.js"></script>
-
+    {% block script %}  
+      <script>
+        $(function()
+        { $(".comment_count").tooltip();
+        });
+      </script>
+    {% endblock %}
   </body>
 </html>
