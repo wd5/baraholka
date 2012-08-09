@@ -3,41 +3,84 @@
 {% block title %}Барахолка Физтеха - {{ ad.name }}{% endblock %}
 
 {% block center %}
-<div align='center'>
-    <font style='font-size:125%'><b>[{{ ad.category }}] {{ad.name}}</font></b><br>
-    Сообщение было послано: {% ifequal user ad.user %}<b style='color:red'>{% else %}<b style='color:darkgreen'>{% endifequal %}{{ad.user}}</b> <a href="{% url postman_write ad.user %}">(Написать)</a><br>
+  <div align='center'>
+    <font style='font-size:125%'>
+      <b>[{{ ad.category }}] {{ad.name}}</b>
+    </font>
+    </br>
+
+    Сообщение было послано: 
+    {% ifequal user ad.user %}
+      <b style='color:red'>
+    {% else %}
+      <b style='color:darkgreen'>
+    {% endifequal %}{{ad.user}}</b>
+    <a href="{% url postman_write ad.user %}">(Написать)</a>
+    </br>
+
     Дата: {{ad.created|date:"l, F j G:i:s Y"}}<br>    
-    {% ifequal user ad.user %}<a href="/edit/{{ ad.id }}">Редактировать</a><br><a href="/archive/{{ ad.id }}">Продано (убрать из списка объявлений)</a>{% endifequal %}
-        <div id="vk_like"></div>
+    {% ifequal user ad.user %}
+      <a class="btn" href="/edit/{{ ad.id }}">
+        <i class="icon-pencil"></i> Редактировать
+      </a>
+      <a class="btn btn-danger" id="selled" href="/archive/{{ ad.id }}" 
+          rel="tooltip" data-original-title="убрать из списка объявлений">
+        <i class="icon-trash"></i> Продано
+      </a>
+    {% endifequal %}
+    </br>
+
+    <div id="vk_like"></div>
     <script type="text/javascript">
         VK.Widgets.Like("vk_like", {type: "button"});
     </script>
-</div>
-    <br><br>
-    {% if errors %}
-{% autoescape off %}
-     {% for error in errors %}
-     <center><font style='color:red;font-size:125%'>{{error}}</font></center><br>
-     {% endfor %}
-{% endautoescape %}
-    {% endif %}<br>
-    {% load bbcode %}
-    {{ad.text|bbcode}}<br><br>
-    {% if ad.price %}
-    <b>Цена:</b> {{ad.price}}<hr>
-    {% endif %}
-    {% if ad.place %}
-    <b>Место:</b> {{ad.place}}<hr>
-    {% endif %}
-    {% for comment in comments_list %}
-    <small>Комментрий пользователя {% ifequal user comment.user %}<b style='color:red'>{% else %}<b style='color:darkgreen'>{% endifequal %}{{comment.user}}</b> <a href="{% url postman_write comment.user %}">(Написать)</a>, оставлен {{comment.created}}</small><br>
-    {{comment.text|bbcode}}<hr>
-    {% endfor %}
-    <center>
+  </div>
+  </br></br>
 
+  {% load bbcode %}
+  {{ad.text|bbcode}}</br></br>
+
+  {% if ad.price %}
+    <b>Цена:</b> {{ad.price}}<hr>
+  {% endif %}
+
+  {% if ad.place %}
+    <b>Место:</b> {{ad.place}}<hr>
+  {% endif %}
+  
+  <table class="table table-striped">
+  {% for comment in comments_list %}
+    <tr><td>
+      <p><small>
+      Комментрий пользователя 
+      {% ifequal user comment.user %}
+        <b style='color:red'>
+      {% else %}
+        <b style='color:darkgreen'>
+      {% endifequal %}{{comment.user}}</b>
+      <a href="{% url postman_write comment.user %}">(Написать)</a>,
+      оставлен {{comment.created}}
+      </small></p>
+
+      {{comment.text|bbcode}}
+    </td></tr>
+  {% endfor %}
+  </table>
+
+  <center>
     <form action="." method="post">{% csrf_token %}
-    Добавить комментарий:<br>{{comform.text}}<br>
-    <input type="submit" value="Добавить">
+      Комментировать:<br>{{comform.text}}<br>
+      <button class="btn" type="submit">
+        <i class="icon-comment"></i> Добавить
+      </button>
     </form>
-    </center>
-{%endblock %}
+  </center>
+{% endblock %} <!-- endblock center -->
+
+{% block script %}
+  <script>
+  $(function()
+  { $("#selled").tooltip({placement:'bottom'});
+  });
+  </script>
+{% endblock %}

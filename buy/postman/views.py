@@ -47,6 +47,7 @@ def _folder(request, folder_name, view_name, option, template_name):
         'by_message_url': reverse(view_name, args=[OPTION_MESSAGES]),
         'current_url': request.get_full_path(),
         'gets': request.GET, # useful to postman_order_by template tag
+        'section': folder_name,
         }, context_instance=RequestContext(request))
 
 @login_required(login_url='/login/')
@@ -146,6 +147,7 @@ def write(request, recipients=None, form_classes=(WriteForm, AnonymousWriteForm)
         'form': form,
         'is_autocompleted': is_autocompleted,
         'next_url': request.GET.get('next', next_url),
+        'section': 'write',
         }, context_instance=RequestContext(request))
 if getattr(settings, 'POSTMAN_DISALLOW_ANONYMOUS', False):
     write = login_required(write, login_url='/login/')

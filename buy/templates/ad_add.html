@@ -1,25 +1,13 @@
 {% extends "main.html" %}
 
-{% block extrahead %}
-<script>function showTooltip()
-{
-var myDiv = document.getElementById('tooltip');
-if(myDiv.style.display == 'none')
-{
-myDiv.style.display = 'block';
-} else {
-myDiv.style.display = 'none';
-}
-return false;
-}</script>
-{% endblock %}
-
 {% block center %}
 {% if preview %}
 <div align='center'>
-    <font style='font-size:150%; color:green'><b>Это всего лишь предпросмотр!</b></font><br>
-    <font style='font-size:125%'><b>[{{ ad.category }}] {{ad.name}}</font></b><br>
-    Сообщение было послано: {{ad.user}}
+  <div class="alert" align="center">
+  <strong>Это всего лишь предпросмотр!</strong>
+  </div>
+  <font style='font-size:125%'><b>[{{ ad.category }}] {{ad.name}}</font></b><br>
+  Сообщение было послано: {{ad.user}}
 </div>
     <br><br>
     {% load bbcode %}
@@ -32,48 +20,82 @@ return false;
     {% endif %}
     <hr><br>
 {% endif %}
-<div align='center'>
-{% if errors %}
-{% autoescape off %}
-<font style='font-size:125%'>
-    {% for error in errors %}
-	{{error}} <br><br>
-    {% endfor %}
-</font>
-{% endautoescape %}
-{% endif %}
-<a href='javascript:;' onclick=showTooltip()> Скрыть/показать подсказку по bbCode </a>
-<div id=tooltip style='display: block'>
-<table border='1'>
-  <tr>
-    <td>[b]полужирный текст[/b]</td>
-    <td><strong>полужирный текст</strong></td>
-  <tr>
-  <tr>
-    <td>[i]наклонный текст[/i]</td>
-    <td><i>наклонный текст</i></td>
-  <tr>
-  <tr>
-    <td>[img]http://example.org/logo.png[/img] или<br>
-        [pic]http://example.org/logo.png[/pic]</td>
-    <td>Картинка.<br>
-        Рекомендуем хостинг катринок <a href="http://i.zlowiki.ru/">http://i.zlowiki.ru/</a></td>
-  <tr>
-  <tr>
-    <td>[url=http://wikipedia.org]Википедия[/url] или [url]http://ru.wikipedia.org[/url]</td>
-    <td><a href="http://wikipedia.org">Википедия</a> или <a href="http://ru.wikipedia.org">http://ru.wikipedia.org</a></td>
-  <tr>
-</table>
-<a href="http://ru.wikipedia.org/wiki/BbCode">подробнее о тегах...</a>
+
+<div class="hidden-phone" align="center">
+    <h4>Подсказка по bbCode</h4></br>
+	<table class="table table-bordered table-striped">
+	  <tr>
+	    <td>[b]полужирный текст[/b]</td>
+	    <td><strong>полужирный текст</strong></td>
+	  <tr>
+	  <tr>
+	    <td>[i]наклонный текст[/i]</td>
+	    <td><i>наклонный текст</i></td>
+	  <tr>
+	  <tr>
+	    <td>[img]http://example.org/logo.png[/img] или<br>
+	        [pic]http://example.org/logo.png[/pic]</td>
+	    <td>Картинка.<br>
+	        Рекомендуем хостинг катринок <a href="http://i.zlowiki.ru/" target="_blank">http://i.zlowiki.ru/</a></td>
+	  <tr>
+	  <tr>
+	    <td>[url=http://wikipedia.org]Википедия[/url] или [url]http://ru.wikipedia.org[/url]</td>
+	    <td><a href="http://wikipedia.org" target="_blank">Википедия</a> или <a href="http://ru.wikipedia.org" target="_blank">http://ru.wikipedia.org</a></td>
+	  <tr>
+	</table>
+	<a href="http://ru.wikipedia.org/wiki/BbCode" target="_blank">подробнее о тегах...</a>
 </div>
-    <form action="." method="post">{% csrf_token %}
-    {{addform.errors}}<br>
-    <b>Тема:</b>{{addform.category}} {{addform.name}}<br><br>
-    {{addform.text}}<br>
-    <b>Цена (не обязательно):</b>{{addform.price}}<br><br>
-    <b>Место (не обязательно):</b>{{addform.place}}<br><br>
-<input name="preview" type="submit" value="Предварительный просмотр" {% if not user.is_authenticated %} disabled="disabled" {% endif %}>    
-<input name="post" type="submit" value="{% if not ad_edit %}Добавить{% else %}Сохранить изменения{% endif %}" {% if not user.is_authenticated %} disabled="disabled" {% endif %}>
-    </form>
+
+</br>
+<div class="row-fluid">
+	<div class="span2 visible-desktop">
+	</div>
+	<div class="span10">
+	  <form class="form-horizontal" action="." method="post">{% csrf_token %}
+	    <fieldset>
+	      <div class="control-group">
+	        <label class="control-label" for="id_category">Категория</label>
+	        <div class="controls">
+	          {{addform.category}}
+	        </div>
+	      </div>
+	      <div class="control-group {% if addform.name.errors %}error{% endif %}">
+	        <label class="control-label" for="id_name">Заголовок объявления</label>
+	        <div class="controls">
+	          {{addform.name}}
+	          {% if addform.name.errors %}
+	            <span class="help-inline">
+	              {% for error in addform.name.errors %}
+	                {{ error|escape }}
+	              {% endfor %}
+	            </span>
+	          {% endif %}
+	        </div>
+	      </div>
+	      <div class="control-group">
+	        <label class="control-label" for="id_text">Текст объявления</label>
+	        <div class="controls">
+	          {{addform.text}}
+	        </div>
+	      </div>
+	      <div class="control-group">
+	        <label class="control-label" for="id_price">Цена (не обязательно)</label>
+	        <div class="controls">
+	          {{addform.price}}
+	        </div>
+	      </div>
+	      <div class="control-group">
+	        <label class="control-label" for="id_place">Место (не обязательно)</label>
+	        <div class="controls">
+	          {{addform.place}}
+	        </div>
+	      </div>
+	      <div class="form-actions">
+	        <button class="btn" name="preview" type="submit" {% if not user.is_authenticated %}disabled{% endif %}><i class="icon-eye-open"></i> Предварительный просмотр</button>  
+	        <button class="btn" name="post" type="submit" {% if not user.is_authenticated %}disabled{% endif %}>{% if not ad_edit %}<i class="icon-plus"></i> Добавить{% else %}<i class="icon-pencil"></i> Сохранить изменения{% endif %}</button>
+	      </div>
+	    </fieldset>
+	  </form>
+	</div>
 </div>
 {%endblock %}

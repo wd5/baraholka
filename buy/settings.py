@@ -12,6 +12,8 @@ if is_development:
 else:
     DEBUG = False
 
+DATETIME_FORMAT="j/n/Y H:i"
+
 DEFAULT_FROM_EMAIL = "noreply@buy.fizteh.ru"
 
 ADMINS = (

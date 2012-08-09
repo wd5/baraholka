@@ -2,3 +2,5 @@
 .project
 .pydevproject
 .settings/
+# DB for development
+buy/buydb
