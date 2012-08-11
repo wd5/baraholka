@@ -145,14 +145,14 @@
           </div>
         {% endblock %}
         </div> <!-- /categories -->
-        <div class="span9"> <!-- adverts -->
-        <div class="well">        
+
+        <div class="span9 well"> <!-- adverts -->       
         {% block center %}
           <ul class="nav nav-list" style="padding: 0;">
             <li class="nav-header">{% if p_num == 1 %}П{%else%}Не п{%endif%}оследние {{ads_list|length}} объявлений</li>
             <li class="divider"></li>
   	        {% for ad in ads_list %}
-  	          <li>
+  	          <li style="margin-bottom: 5px;">
   	            <a href='/item/{{ad.id}}'>
   	              [{{ ad.category }}] {{ad.name}} - 
   	              {% ifequal user ad.user %}
@@ -171,7 +171,6 @@
   	        {% endfor %}
 	      </ul>
         {% endblock %}
-        </div> 
         {% block paging %}
           <div class="pagination" align="center">
             <ul>
@@ -180,8 +179,9 @@
               {% endfor %}
             </ul>
           </div>
-        {% endblock %}    
+        {% endblock %}   
         </div> <!-- /adverts -->
+
       {% endblock %}
       </div>
     </div> <!-- /container -->
