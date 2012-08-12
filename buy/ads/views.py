@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.sites.models import Site
 from django.core.cache import cache
+from django.core.mail import send_mail
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -57,6 +58,18 @@ def main(request, p_num):
     #cache.set('main', to_return)
     return to_return
 
+def comment_notification(comment):
+    subject = u"Комментарий к вашему объявлению на сайте buy.fizteh.ru"
+    message = u"""Уважаемый пользователь,
+    
+    К Вашему объявлению \"%s\" добавлен комментарий.
+    
+    Чтобы посмотреть его, перейдите по ссылке: http://buy.fizteh.ru/item/%d
+    
+    С уважением, команда Барахолки.""" % (comment.advert.name, 
+                                          comment.advert.id)
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, 
+              [comment.advert.user.email], True)
 
 @csrf_protect
 def ad_show(request, num):
@@ -79,6 +92,7 @@ def ad_show(request, num):
                 cd = comform.cleaned_data
                 c = Comment(advert=ad, user=request.user, text=cd['text'])
                 c.save()
+                comment_notification(c)
                 return HttpResponseRedirect('.')
     else:
         comform = CommentForm()
