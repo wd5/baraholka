@@ -25,7 +25,7 @@
       </a>
       <a class="btn btn-danger" id="selled" href="/archive/{{ ad.id }}" 
           rel="tooltip" data-original-title="убрать из списка объявлений">
-        <i class="icon-trash"></i> Продано
+        <i class="icon-trash"></i> {% if ad.sell %}Продано{% else %}Куплено{% endif %}
       </a>
     {% endifequal %}
     </br></br>
