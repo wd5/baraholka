@@ -7,9 +7,9 @@ if is_development:
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from django.conf.urls.defaults import patterns, include
-from buy.ads.views import ad_show, main, news_all_show, news_show, cat_list,\
+from buy.ads.views import ad_show, news_all_show, news_show, \
                           ad_add, ad_edit, ad_archive, cabinet, my_ads_list,\
-                          reg
+                          reg, adverts_list
 from django.contrib.auth.views import login, logout
 from postman import urls as postman_urls
 from buy.ads.feeds import BaseFeed, VkontakteFeed
@@ -20,6 +20,10 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    (r'^$', adverts_list, {'sell_page_num': '1', 'buy_page_num': '1', 
+                           'cat_num': '0'}),
+    (r'^list/(?P<sell_page_num>\d+)-(?P<buy_page_num>\d+)-(?P<cat_num>\d+)',
+     adverts_list),
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
     (r'^feed/', BaseFeed()),
@@ -30,12 +34,8 @@ urlpatterns = patterns('',
     (r'^ads/(?P<num>\d+)/$', redirect_to, {'url': '/item/%(num)s/'}),
     (r'^edit/(?P<num>\d+)/$', ad_edit),
     (r'^archive/(?P<num>\d+)/$', ad_archive),
-    (r'^$', main, {'p_num': '1'}),
-    (r'^page/(?P<p_num>\d+)/$', main),
     (r'^news/$', news_all_show),
     (r'^news/(?P<num>\d+)/$', news_show),
-    (r'^cat/(?P<num>\d+)/$', cat_list, {'p_num': '1'}),
-    (r'^cat/(?P<num>\d+)/page/(?P<p_num>\d+)/$', cat_list),
     (r'^add/$', ad_add),
     (r'^cabinet/$', cabinet),
     (r'^cabinet/item$', my_ads_list),

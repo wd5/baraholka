@@ -18,9 +18,7 @@ import os
 def common_processor(request):
     return {'form': SimpleSearchForm(), 'user': request.user,
             'category_list': Category.objects.all().order_by('id'),
-            'news_list': News.objects.all().order_by('-created')[0:2],
-            'buy_ads': Advert.objects.filter(sell=False).\
-                           order_by('-created')[0:5]}
+            'news_list': News.objects.all().order_by('-created')[0:2],}
 
 
 def regenerate_widget():
@@ -36,6 +34,48 @@ def regenerate_widget():
     content = response.rendered_content.encode('utf-8')
     widget_file.write(content)
     widget_file.close()
+
+def adverts_query(sell, cat):
+    if cat == 0:
+        return Advert.objects.filter(sell=sell, is_selled=False)
+    else:
+        return Advert.objects.filter(sell=sell, is_selled=False, category=cat)
+
+def adverts_list(request, sell_page_num, buy_page_num, cat_num):
+    sell_page_num = int(sell_page_num)
+    buy_page_num = int(buy_page_num)
+    cat_num = int(cat_num)
+    if cat_num != 0:
+        try:
+            cat = Category.objects.get(id=cat_num)
+        except Category.DoesNotExist:
+            cat_num = 0
+    
+    ads_per_page = 15
+    
+    sell_query = adverts_query(True, cat_num)
+    buy_query = adverts_query(False, cat_num)
+
+    sell_ads_list = sell_query.order_by('-created')[
+            (sell_page_num - 1) * ads_per_page :
+            (sell_page_num - 1) * ads_per_page + ads_per_page]
+    buy_ads_list = buy_query.order_by('-created')[
+            (buy_page_num - 1) * ads_per_page :
+            (buy_page_num - 1) * ads_per_page + ads_per_page]
+    section = "adverts"
+    #paging
+    buy_adv_num = len(buy_query)
+    buy_pages_num = range(1, buy_adv_num / ads_per_page + 
+                          (1 if buy_adv_num % ads_per_page == 0 else 2))
+
+    sell_adv_num = len(sell_query)
+    sell_pages_num = range(1, sell_adv_num / ads_per_page + 
+                      (1 if sell_adv_num % ads_per_page == 0 else 2))
+
+    to_return = render_to_response('main.html', locals(),
+        context_instance=RequestContext(request,
+                                        processors=[common_processor]))
+    return to_return
 
 @csrf_protect
 def main(request, p_num):
@@ -163,9 +203,10 @@ def ad_add(request):
         addform = AddForm(request.POST)
         if addform.is_valid():
             cd = addform.cleaned_data
+            is_sell = True if int(cd['sell_or_buy']) == 0 else False
             ad = Advert(user=request.user, name=cd['name'], text=cd['text'],
                         category=Category.objects.get(id=int(cd['category'])),
-                        price=cd['price'], place=cd['place'], sell=True)
+                        price=cd['price'], place=cd['place'], sell=is_sell)
             if u"post" in request.POST.keys():
                 ad.save()
                 regenerate_widget()
@@ -189,7 +230,8 @@ def ad_edit(request, num):
     if ad.user != user:
         msg = 'Нельзя редактировать чужие объявления.'
         return render_to_response('msg.html', locals())
-    addform = AddForm({'name':     ad.name,
+    addform = AddForm({'sell_or_buy': 0 if ad.sell else 1,
+                       'name':     ad.name,
                        'text':     ad.text,
                        'category': ad.category.id,
                        'price':    ad.price,
@@ -198,6 +240,7 @@ def ad_edit(request, num):
         addform = AddForm(request.POST)
         if addform.is_valid():
             cd = addform.cleaned_data
+            ad.sell = True if int(cd['sell_or_buy']) == 0 else False
             ad.name = cd['name']
             ad.text = cd['text']
             ad.category = Category.objects.get(id=int(cd['category']))

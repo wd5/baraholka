@@ -36,6 +36,7 @@ class AddForm(forms.Form):
     text = forms.CharField(
                 widget=forms.Textarea(attrs={'class': 'input-xlarge'}),
                 label="Описание", required=False)
+    sell_or_buy = forms.ChoiceField()
     category = forms.ChoiceField(label="Категория")
     price = forms.CharField(label="Цена", required=False, max_length=32)
     place = forms.CharField(label="Место", required=False, max_length=128)
@@ -46,6 +47,7 @@ class AddForm(forms.Form):
         cat_list = [(cat.id, cat.name) for cat in
                     Category.objects.all().order_by('id')]
         self.fields['category'].choices = cat_list
+        self.fields['sell_or_buy'].choices = [(0, 'Продать'), (1, 'Купить')]
 
 
 class PassChangeForm(forms.Form):

@@ -121,12 +121,12 @@
               <li class="nav-header">
                 Категории:
               </li>
-              <li> <!-- TODO: insert active -->
+              <li {% ifequal cat_num 0 %}class="active"{% endifequal %}>
                 <a href="/"><i class="icon-th"></i> Все</a>
               </li>
               {% for category in category_list %}
-	            <li>
-	                 <a href='/cat/{{category.id}}'><i class="{{category.name|category_icon_class}}"></i> {{category.name}}</a>
+	            <li {% ifequal cat_num category.id %}class="active"{% endifequal %}>
+	                 <a href='/list/1-1-{{category.id}}'><i class="{{category.name|category_icon_class}}"></i> {{category.name}}</a>
                 </li>
 	          {% endfor %}
             </ul>
@@ -145,13 +145,14 @@
           </div>
         {% endblock %}
         </div> <!-- /categories -->
-
-        <div class="span9 well"> <!-- adverts -->       
+        
+        <div class="span9">
         {% block center %}
+        <div class="well"> <!-- sell adverts -->
           <ul class="nav nav-list" style="padding: 0;">
-            <li class="nav-header">{% if p_num == 1 %}П{%else%}Не п{%endif%}оследние {{ads_list|length}} объявлений</li>
+            <li class="nav-header"><h1>Продажа</h1> {% if sell_page_num == 1 %}П{%else%}Не п{%endif%}оследние {{sell_ads_list|length}} объявлений</li>
             <li class="divider"></li>
-  	        {% for ad in ads_list %}
+  	        {% for ad in sell_ads_list %}
   	          <li style="margin-bottom: 5px;">
   	            <a href='/item/{{ad.id}}'>
   	              [{{ ad.category }}] {{ad.name}} - 
@@ -170,17 +171,49 @@
   	          </li>
   	        {% endfor %}
 	      </ul>
-        {% endblock %}
-        {% block paging %}
           <div class="pagination" align="center">
             <ul>
-              {% for page_num in pages_num %}
-                <li {% ifequal p_num page_num %}class="active"{% endifequal %}><a href="{% if num %}/cat/{{num}}{%endif%}/page/{{page_num}}">{{page_num}}</a></li>
+              {% for page_num in sell_pages_num %}
+                <li {% ifequal sell_page_num page_num %}class="active"{% endifequal %}><a href="/list/{{page_num}}-{{buy_page_num}}-{{cat_num}}">{{page_num}}</a></li>
+              {% endfor %}
+            </ul>
+          </div>   
+        </div> <!-- /sell adverts -->
+        
+        <div class="well"> <!-- buy adverts -->   
+          <ul class="nav nav-list" style="padding: 0;">
+            <li class="nav-header"><h1>Покупка</h1>{% if buy_page_num == 1 %}П{%else%}Не п{%endif%}оследние {{buy_ads_list|length}} объявлений</li>
+            <li class="divider"></li>
+            {% for ad in buy_ads_list %}
+              <li style="margin-bottom: 5px;">
+                <a href='/item/{{ad.id}}'>
+                  [{{ ad.category }}] {{ad.name}} - 
+                  {% ifequal user ad.user %}
+                    <b style='color:red'>
+                  {% else %}
+                    <b style='color:darkgreen'>
+                  {% endifequal %}{{ad.user}}</b>
+                  {% if ad.comment_set.all %}
+                  <span class="badge comment_count" rel="tooltip" data-original-title="количество комментариев">
+                    <i class="icon-comment"></i> {{ad.comment_set.all|length}}
+                  </span>
+                  {% endif %}
+                   - <font style='font-size:75%'>{{ad.created|date:"j/n/Y H:i"}}</font>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        
+          <div class="pagination" align="center">
+            <ul>
+              {% for page_num in buy_pages_num %}
+                <li {% ifequal buy_page_num page_num %}class="active"{% endifequal %}><a href="/list/{{sell_page_num}}-{{page_num}}-{{cat_num}}">{{page_num}}</a></li>
               {% endfor %}
             </ul>
           </div>
-        {% endblock %}   
-        </div> <!-- /adverts -->
+        </div> <!-- /buy adverts -->
+        {% endblock %} <!-- endblock center -->
+        </div>
 
       {% endblock %}
       </div>
