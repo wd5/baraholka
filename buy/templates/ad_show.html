@@ -3,6 +3,7 @@
 {% block title %}Барахолка Физтеха - {{ ad.name }}{% endblock %}
 
 {% block center %}
+<div class="well">
   <div align='center'>
     <font style='font-size:125%'>
       <b>[{{ ad.category }}] {{ad.name}}</b>
@@ -48,6 +49,10 @@
     <b>Место:</b> {{ad.place}}<hr>
   {% endif %}
   
+  {% if ad.user.get_profile.info %}
+    <b>Контактная информация:</b> {{ad.user.get_profile.info}}
+  {% endif %}
+  
   <table class="table table-striped">
   {% for comment in comments_list %}
     <tr><td>
@@ -75,6 +80,7 @@
       </button>
     </form>
   </center>
+</div>
 {% endblock %} <!-- endblock center -->
 
 {% block script %}
