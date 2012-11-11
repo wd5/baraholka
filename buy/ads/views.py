@@ -108,8 +108,27 @@ def comment_notification(comment):
     
     С уважением, команда Барахолки.""" % (comment.advert.name, 
                                           comment.advert.id)
+    # Send mail to the author of advert.
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, 
               [comment.advert.user.email], True)
+    # Send mail to the other users that have commented the advert.
+    all_comments = Comment.objects.filter(advert=comment.advert)
+    commenters = []
+    for com in all_comments:
+        if com.user != comment.advert.user and com.user not in commenters:
+            commenters.append(com.user)
+    if len(commenters) == 0:
+        return
+    subject = u"Ответ на комментарий к объявлению на сайте buy.fizteh.ru"
+    message = u"""Уважаемый пользователь,
+    
+    К объявлению \"%s\", которое вы комментировали, добавлен новый комментарий.
+    
+    Чтобы посмотреть его, перейдите по ссылке: http://buy.fizteh.ru/item/%d
+    
+    С уважением, команда Барахолки.""" % (comment.advert.name,
+                                          comment.advert.id)
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, commenters, True)
 
 @csrf_protect
 def ad_show(request, num):
