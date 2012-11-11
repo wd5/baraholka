@@ -28,21 +28,13 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/static/ico/apple-touch-icon-57-precomposed.png">
     
+    <!-- VK js -->
+    <script type="text/javascript" src="//vk.com/js/api/openapi.js?63"></script>
+
     <script type="text/javascript">
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-28955683-1']);
-	  _gaq.push(['_trackPageview']);
-	
-	  (function() {
-	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();	
-	</script>
-	<script type="text/javascript" src="http://userapi.com/js/api/openapi.js?48"></script>
-	<script type="text/javascript">
-	  VK.init({apiId: 2817356, onlyWidgets: true});
-	</script>
+      VK.init({apiId: 2817356, onlyWidgets: true});
+    </script>
+    <!-- /VK js -->
     {% block extrahead %}{% endblock %}
   </head>
 
@@ -144,7 +136,6 @@
             </ul>
           </div>
           <div align="center" class="visible-desktop" style="padding: 8px 0;">
-            <script type="text/javascript" src="//vk.com/js/api/openapi.js?63"></script>
             <!-- VK Widget -->
             <div id="vk_groups"></div>
             <script type="text/javascript">
