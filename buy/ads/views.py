@@ -116,7 +116,7 @@ def comment_notification(comment):
     commenters = []
     for com in all_comments:
         if com.user != comment.advert.user and com.user not in commenters:
-            commenters.append(com.user)
+            commenters.append(com.user.email)
     if len(commenters) == 0:
         return
     subject = u"Ответ на комментарий к объявлению на сайте buy.fizteh.ru"
