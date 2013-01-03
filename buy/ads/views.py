@@ -213,11 +213,15 @@ def ad_add(request):
     addform = AddForm()
     section = 'new'
     errors = []
-    if not request.user.is_authenticated():
-        errors.append(u'<a href="/reg">Зарегистрируйтесь</a> или '
-                      u'<a href="/login">войдите</a>, '
-                      u'чтобы добавлять объявления.')
-        addform = AddForm()
+    user = request.user
+
+    msg = u'<a href="/reg">Зарегистрируйтесь</a> или '\
+          u'<a href="/login">войдите</a>, '\
+          u'чтобы добавлять объявления.'
+
+    if not user.is_authenticated():
+        return render_to_response('msg.html', locals())
+
     if request.method == 'POST' and request.user.is_authenticated():
         addform = AddForm(request.POST)
         if addform.is_valid():
